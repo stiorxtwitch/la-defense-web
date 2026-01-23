@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Défense : Plan et Récapitulatif de Vol</title>
+    <style>
+        /* CSS inline pour un design moderne */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-image: url('https://i.imgur.com/XN4tEGI.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(75, 83, 32, 0.7); /* Vert armée translucide */
+            z-index: -1;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.1); /* Fond translucide pour le contenu */
+            backdrop-filter: blur(10px); /* Effet flou moderne */
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4B5320; /* Vert armée foncé */
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        input, select, textarea {
+            margin-bottom: 20px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            background-color: rgba(255, 255, 255, 0.3);
+            outline: none;
+        }
+
+        button {
+            background-color: #4B5320; /* Vert armée */
+            color: #fff;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #3A4220; /* Ton plus foncé pour hover */
+        }
+
+        #message {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.1em;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="container">
+        <h1>La Défense : Plan et Récapitulatif de Vol</h1>
+        <form id="volForm">
+            <label for="pilote">Nom du Pilote :</label>
+            <input type="text" id="pilote" name="pilote" required>
+
+            <label for="numeroVol">Numéro de Vol :</label>
+            <input type="text" id="numeroVol" name="numeroVol" required>
+
+            <label for="date">Date du Vol :</label>
+            <input type="date" id="date" name="date" required>
+
+            <label for="heureDepart">Heure de Départ :</label>
+            <input type="time" id="heureDepart" name="heureDepart" required>
+
+            <label for="heureArrivee">Heure d'Arrivée :</label>
+            <input type="time" id="heureArrivee" name="heureArrivee" required>
+
+            <label for="depart">Lieu de Départ :</label>
+            <input type="text" id="depart" name="depart" required>
+
+            <label for="arrivee">Lieu d'Arrivée :</label>
+            <input type="text" id="arrivee" name="arrivee" required>
+
+            <label for="typeAvion">Type d'Avion :</label>
+            <select id="typeAvion" name="typeAvion" required>
+                <option value="">Sélectionnez...</option>
+                <option value="hélicoptère">Hélicoptère</option>
+                <option value="avion de chasse">Avion de Chasse</option>
+                <option value="transport">Avion de Transport</option>
+                <option value="autre">Autre</option>
+            </select>
+
+            <label for="notes">Notes Supplémentaires :</label>
+            <textarea id="notes" name="notes" rows="4"></textarea>
+
+            <button type="submit">Enregistrer le Plan de Vol</button>
+        </form>
+        <div id="message"></div>
+    </div>
+
+    <script>        
+        const scriptURL = 'https://script.google.com/macros/s/AKfycby5AxNnJtWG9KsgRfynMkHvT2ojY6wEFvOZqDAKb-ud56w2ZnBeiZCgxjXMipYto9EX/exec'; // Remplacez par votre URL Google Apps Script
+
+        const form = document.getElementById('volForm');
+        const message = document.getElementById('message');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            fetch(scriptURL, { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.result === 'success') {
+                        message.textContent = 'Plan de vol enregistré avec succès !';
+                        form.reset();
+                    } else {
+                        message.textContent = 'Erreur lors de l\'enregistrement.';
+                    }
+                })
+                .catch(error => {
+                    message.textContent = 'Erreur : ' + error;
+                });
+        });
+    </script>
+</body>
+</html>

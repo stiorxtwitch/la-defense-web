@@ -11,14 +11,12 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Arial', Helvetica, sans-serif;
             color: #000000;
             background-color: #f8f9fa;
             line-height: 1.6;
         }
-
         header {
             position: fixed;
             top: 0;
@@ -33,7 +31,6 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             border-bottom: 1px solid rgba(0,0,0,0.08);
         }
-
         .logo {
             display: flex;
             align-items: center;
@@ -41,32 +38,26 @@
             font-weight: bold;
             color: #C64E4F;
         }
-
         .logo img {
             height: 55px;
             margin-right: 12px;
         }
-
         nav ul {
             display: flex;
             list-style: none;
         }
-
         nav ul li {
             margin-left: 2.5rem;
         }
-
         nav ul li a {
             color: #333333;
             text-decoration: none;
             font-weight: 500;
             transition: color 0.3s;
         }
-
         nav ul li a:hover {
             color: #C64E4F;
         }
-
         .hero {
             height: 100vh;
             min-height: 700px;
@@ -78,7 +69,6 @@
             color: #ffffff;
             overflow: hidden;
         }
-
         .hero-video {
             position: absolute;
             top: 0;
@@ -88,7 +78,6 @@
             object-fit: cover;
             z-index: -2;
         }
-
         .hero-overlay {
             position: absolute;
             top: 0;
@@ -98,19 +87,16 @@
             background: rgba(0, 0, 0, 0.45);
             z-index: -1;
         }
-
         .hero-content {
             max-width: 900px;
             padding: 0 5%;
             z-index: 1;
         }
-
         .hero h1 {
             font-size: 5rem;
             margin-bottom: 1rem;
             text-shadow: 2px 2px 12px rgba(0,0,0,0.7);
         }
-
         .hero p {
             font-size: 2.2rem;
             font-weight: bold;
@@ -118,26 +104,22 @@
             margin: 1rem 0;
             text-shadow: 0 0 15px rgba(0,0,0,0.6);
         }
-
         .content-section {
             padding: 8rem 5% 6rem;
             background: #ffffff;
         }
-
         .content-section h2 {
             font-size: 3.2rem;
             margin-bottom: 2rem;
             color: #C64E4F;
             text-align: center;
         }
-
         .content-section p {
             font-size: 1.3rem;
             max-width: 1000px;
             margin: 0 auto 2rem;
             color: #444444;
         }
-
         .gallery {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -145,7 +127,6 @@
             margin: 4rem auto;
             max-width: 1400px;
         }
-
         .gallery img {
             width: 100%;
             height: 300px;
@@ -154,16 +135,13 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.1);
             transition: transform 0.4s ease;
         }
-
         .gallery img:hover {
             transform: scale(1.05);
         }
-
         .special-units {
             background: #f0f4f8;
             padding: 6rem 5%;
         }
-
         .special-units .unit {
             max-width: 900px;
             margin: 0 auto 3rem;
@@ -172,13 +150,33 @@
             border-radius: 12px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
         }
-
         .special-units h3 {
             color: #C64E4F;
             font-size: 2.2rem;
             margin-bottom: 1rem;
         }
-
+        /* Style du bouton récap vol */
+        .vol-button-container {
+            text-align: center;
+            margin: 3rem 0;
+        }
+        .vol-button {
+            display: inline-block;
+            background-color: #C64E4F;
+            color: white;
+            font-size: 1.4rem;
+            font-weight: bold;
+            padding: 1.2rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(198, 78, 79, 0.3);
+            transition: all 0.3s ease;
+        }
+        .vol-button:hover {
+            background-color: #a53d3e;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(198, 78, 79, 0.4);
+        }
         footer {
             text-align: center;
             padding: 3rem 5%;
@@ -208,11 +206,11 @@
 
     <section class="hero">
         <div class="hero-video">
-            <iframe 
-                src="https://www.youtube.com/embed/l5mtdWBNXPQ?autoplay=1&mute=1&loop=1&playlist=l5mtdWBNXPQ&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3" 
-                title="La mission de la Défense" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            <iframe
+                src="https://www.youtube.com/embed/l5mtdWBNXPQ?autoplay=1&mute=1&loop=1&playlist=l5mtdWBNXPQ&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3"
+                title="La mission de la Défense"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowfullscreen
                 style="width:100%; height:100%; border:none;">
             </iframe>
@@ -237,28 +235,32 @@
             <li>Formation des pilotes (via l'École de Pilotage Élémentaire et Avancée)</li>
             <li>Soutien aux opérations terrestres et maritimes</li>
         </ul>
+
+        <!-- Bouton vers le récap de vol -->
+        <div class="vol-button-container">
+            <a href="vol.html" target="_blank" class="vol-button">
+                Accéder au Récapitulatif de Vol →
+            </a>
+        </div>
     </section>
 
     <section class="content-section">
         <h2>Unités et Capacités Clés</h2>
         <p>La Composante Air dispose de plusieurs escadrons de combat et de soutien :</p>
-        
+       
         <div class="special-units">
             <div class="unit">
                 <h3>2e Escadre Tactique (Florennes)</h3>
                 <p>Équipée de F-16 Fighting Falcon (bientôt remplacés par F-35 Lightning II). Missions : supériorité aérienne, appui au sol, reconnaissance armée.</p>
             </div>
-
             <div class="unit">
                 <h3>10e Escadre Tactique (Kleine Brogel)</h3>
                 <p>Également équipée de F-16, base nucléaire OTAN (capacité nucléaire partagée). Missions similaires + dissuasion nucléaire.</p>
             </div>
-
             <div class="unit">
                 <h3>15e Wing Transport Aérien (Melsbroek)</h3>
                 <p>A400M Atlas, Falcon 7X/900, Embraer 135/145, C-130 Hercules (en phase de retrait). Missions : transport stratégique, évacuation médicale, largage de parachutistes, soutien humanitaire.</p>
             </div>
-
             <div class="unit">
                 <h3>1er Wing (Beauvechain)</h3>
                 <p>Formation des pilotes, hélicoptères Alouette III (bientôt NH90), drones (MQ-9B SkyGuardian à venir), centre de contrôle aérien.</p>
@@ -277,7 +279,7 @@
     </section>
 
     <footer>
-        © La Défense Belge - Tous droits réservés
+        © La Défense Belge - Tous droits réservés (Ceci est un site fictif, utilisé pour le RolePlay)
     </footer>
 
 </body>

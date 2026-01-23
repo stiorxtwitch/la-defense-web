@@ -1,1 +1,284 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Composante Mer - La Défense</title>
+    <link rel="icon" type="image/png" href="https://i.imgur.com/TpQXi2f.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Arial', Helvetica, sans-serif;
+            color: #000000;
+            background-color: #f8f9fa;
+            line-height: 1.6;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #C64E4F;
+        }
+
+        .logo img {
+            height: 55px;
+            margin-right: 12px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 2.5rem;
+        }
+
+        nav ul li a {
+            color: #333333;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #C64E4F;
+        }
+
+        .hero {
+            height: 100vh;
+            min-height: 700px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            padding: 0 5%;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 12px rgba(0,0,0,0.7);
+        }
+
+        .hero p {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #FFCD00;
+            margin: 1rem 0;
+            text-shadow: 0 0 15px rgba(0,0,0,0.6);
+        }
+
+        .content-section {
+            padding: 8rem 5% 6rem;
+            background: #ffffff;
+        }
+
+        .content-section h2 {
+            font-size: 3.2rem;
+            margin-bottom: 2rem;
+            color: #C64E4F;
+            text-align: center;
+        }
+
+        .content-section p {
+            font-size: 1.3rem;
+            max-width: 1000px;
+            margin: 0 auto 2rem;
+            color: #444444;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin: 4rem auto;
+            max-width: 1400px;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: transform 0.4s ease;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+
+        .special-units {
+            background: #f0f4f8;
+            padding: 6rem 5%;
+        }
+
+        .special-units .unit {
+            max-width: 900px;
+            margin: 0 auto 3rem;
+            padding: 2rem;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .special-units h3 {
+            color: #C64E4F;
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 5%;
+            background: #f0f0f0;
+            color: #666666;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="https://i.imgur.com/TpQXi2f.png" alt="Logo La Défense">
+            LA DÉFENSE
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="terre.html">Composante Terre</a></li>
+                <li><a href="mer.html">Composante Mer</a></li>
+                <li><a href="air.html">Composante Air</a></li>
+                <li><a href="medical.html">Composante Médicale</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-video">
+            <iframe 
+                src="https://www.youtube.com/embed/l5mtdWBNXPQ?autoplay=1&mute=1&loop=1&playlist=l5mtdWBNXPQ&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3" 
+                title="La mission de la Défense" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen
+                style="width:100%; height:100%; border:none;">
+            </iframe>
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Composante Mer</h1>
+            <p>La force maritime belge</p>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <h2>Présentation de la Composante Mer</h2>
+        <p>La Composante Mer (Marine belge) assure la protection des intérêts belges en mer, la surveillance des eaux territoriales, la lutte contre la piraterie, le trafic illicite et les menaces asymétriques, ainsi que la participation à des opérations internationales dans le cadre de l’OTAN, de l’Union européenne et des Nations Unies.</p>
+        <p>Avec environ 2 000 militaires et civils, elle opère principalement depuis la base navale de Zeebrugge et le port d’Ostende. Elle dispose d’une flotte moderne incluant des frégates, des patrouilleurs et des navires de soutien. Elle contribue également à la sécurité maritime en mer du Nord et dans l’Atlantique, ainsi qu’à des missions de sauvetage et d’assistance.</p>
+        <p>Missions principales :</p>
+        <ul style="font-size: 1.3rem; max-width: 900px; margin: 1rem auto 2rem; color: #444; padding-left: 2rem;">
+            <li>Surveillance et contrôle maritime (belge et allié)</li>
+            <li>Escorte et protection de navires</li>
+            <li>Lutte contre la piraterie et le trafic illicite</li>
+            <li>Opérations de déminage</li>
+            <li>Soutien aux opérations amphibies</li>
+            <li>Sauvetage en mer et assistance humanitaire</li>
+        </ul>
+    </section>
+
+    <section class="content-section">
+        <h2>Unités et Capacités Clés</h2>
+        <p>La Composante Mer regroupe plusieurs unités opérationnelles et de soutien :</p>
+        
+        <div class="special-units">
+            <div class="unit">
+                <h3>1re Division Navale (Zeebrugge)</h3>
+                <p>Frégates de la classe Karel Doorman (F930 Leopold I et F931 Louise-Marie) et patrouilleurs de la classe Castor (P960 Castor et P961 Pollux). Missions : défense aérienne, anti-sous-marine, lutte antinavire, protection de la zone économique exclusive.</p>
+            </div>
+
+            <div class="unit">
+                <h3>Groupe Opérations Spéciales Maritimes (GOSM)</h3>
+                <p>Unité d’élite maritime intégrée au Special Operations Regiment (SOR). Spécialisée dans les opérations amphibies, la reconnaissance maritime spéciale, l’abordage de navires, la libération d’otages en mer et les opérations contre la piraterie.</p>
+            </div>
+
+            <div class="unit">
+                <h3>Équipe de Déminage (MCM)</h3>
+                <p>Navires chasseurs de mines de la classe Tripartite (M916 Bellis, M918 Crocus, etc.). Missions : déminage des routes maritimes, opérations de neutralisation d’engins explosifs sous-marins, participation aux groupes OTAN de lutte contre les mines.</p>
+            </div>
+
+            <div class="unit">
+                <h3>Service de Sauvetage (Zeebrugge & Ostende)</h3>
+                <p>Bateaux de sauvetage rapides et hélicoptères (NH90 en coopération avec la Composante Air). Missions : sauvetage en mer, assistance aux navires en détresse, recherche et sauvetage (SAR).</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <h2>Galerie</h2>
+        <div class="gallery">
+            <img src="https://i.imgur.com/Tmj8GPg.jpeg" alt="Frégate en mer">
+            <img src="https://i.imgur.com/lHWekOR.jpeg" alt="Patrouilleur">
+            <img src="https://i.imgur.com/MXtamhf.jpeg" alt="Opérations navales">
+            <img src="https://i.imgur.com/T8R7lda.jpeg" alt="Navire belge">
+        </div>
+    </section>
+
+    <footer>
+        © La Défense Belge - Tous droits réservés
+    </footer>
+
+</body>
+</html>

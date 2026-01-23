@@ -1,1 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Composante Terre - La Défense</title>
+    <link rel="icon" type="image/png" href="https://i.imgur.com/TpQXi2f.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Arial', Helvetica, sans-serif;
+            color: #000000;
+            background-color: #f8f9fa;
+            line-height: 1.6;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #C64E4F;
+        }
+
+        .logo img {
+            height: 55px;
+            margin-right: 12px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 2.5rem;
+        }
+
+        nav ul li a {
+            color: #333333;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #C64E4F;
+        }
+
+        .hero {
+            height: 100vh;
+            min-height: 700px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            padding: 0 5%;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 12px rgba(0,0,0,0.7);
+        }
+
+        .hero p {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #FFCD00;
+            margin: 1rem 0;
+            text-shadow: 0 0 15px rgba(0,0,0,0.6);
+        }
+
+        .content-section {
+            padding: 8rem 5% 6rem;
+            background: #ffffff;
+        }
+
+        .content-section h2 {
+            font-size: 3.2rem;
+            margin-bottom: 2rem;
+            color: #C64E4F;
+            text-align: center;
+        }
+
+        .content-section p {
+            font-size: 1.3rem;
+            max-width: 1000px;
+            margin: 0 auto 2rem;
+            color: #444444;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin: 4rem auto;
+            max-width: 1200px;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: transform 0.4s ease;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+
+        .special-units {
+            background: #f0f4f8;
+            padding: 6rem 5%;
+        }
+
+        .special-units .unit {
+            max-width: 900px;
+            margin: 0 auto 3rem;
+            padding: 2rem;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .special-units h3 {
+            color: #C64E4F;
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 5%;
+            background: #f0f0f0;
+            color: #666666;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="https://i.imgur.com/TpQXi2f.png" alt="Logo La Défense">
+            LA DÉFENSE
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="terre.html">Composante Terre</a></li>
+                <li><a href="mer.html">Composante Mer</a></li>
+                <li><a href="air.html">Composante Air</a></li>
+                <li><a href="medical.html">Composante Médicale</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-video">
+            <iframe 
+                src="https://www.youtube.com/embed/l5mtdWBNXPQ?autoplay=1&mute=1&loop=1&playlist=l5mtdWBNXPQ&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3" 
+                title="La mission de la Défense" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen
+                style="width:100%; height:100%; border:none;">
+            </iframe>
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Composante Terre</h1>
+            <p>La force au sol de La Défense</p>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <h2>Présentation de la Composante Terre</h2>
+        <p>La Composante Terre est l'une des quatre composantes des Forces armées belges. Elle constitue la force terrestre principale et est responsable de la défense du territoire belge, de la participation à des opérations internationales, et du soutien aux autorités civiles en cas de crise (inondations, catastrophes, etc.).</p>
+        <p>Avec environ 10 000 militaires, elle opère dans des environnements variés : combats conventionnels, opérations de stabilisation, missions de paix sous mandat ONU/OTAN/UE. Ses unités sont entraînées pour des déploiements rapides, en coalition internationale, et intègrent des capacités modernes comme les véhicules blindés, l'artillerie, le génie et la cyberdéfense.</p>
+        <p>Missions principales :</p>
+        <ul style="font-size: 1.3rem; max-width: 900px; margin: 1rem auto 2rem; color: #444; padding-left: 2rem;">
+            <li>Défense collective du territoire (OTAN)</li>
+            <li>Opérations d'assistance humanitaire et de secours</li>
+            <li>Missions de stabilisation et de paix à l'étranger</li>
+            <li>Soutien aux forces de sécurité intérieure</li>
+        </ul>
+    </section>
+
+    <section class="content-section">
+        <h2>Unités Spéciales de la Composante Terre</h2>
+        <p>La Composante Terre abrite des unités d'élite, notamment au sein du Special Operations Regiment (SOR), créé en 2018 pour regrouper les capacités spéciales. L'unité la plus prestigieuse est le <strong>Special Forces Group (SFG)</strong>, considéré comme une unité Tier 1 belge.</p>
+        
+        <div class="special-units">
+            <div class="unit">
+                <h3>Special Forces Group (SFG)</h3>
+                <p>Le SFG est l'unité de forces spéciales principale de la Belgique, héritière des traditions SAS de la Seconde Guerre mondiale. Basé à Heverlee (avec une branche maritime à Zeebrugge), il opère dans les domaines terrestre, aérien et maritime.</p>
+                <p>Missions exclusives ou principales :</p>
+                <ul>
+                    <li>Reconnaissance spéciale et surveillance (SR) : collecte d'informations en profondeur, souvent sur de longues périodes</li>
+                    <li>Action directe (DA) : opérations offensives rapides (destruction, saisie, arrestation)</li>
+                    <li>Libération d'otages à l'étranger (exclusivité militaire belge)</li>
+                    <li>Assistance militaire (MA) : formation et conseil de forces partenaires</li>
+                    <li>Opérations non conventionnelles, sauvetage au combat, protection de personnalités</li>
+                </ul>
+                <p>Devise : "Far Ahead" et "Who Dares Wins". Le SFG est déployé dans de nombreuses opérations internationales (Afghanistan, Irak, Mali, etc.) et est reconnu pour sa discrétion et son efficacité.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <h2>Galerie</h2>
+        <div class="gallery">
+            <img src="https://i.imgur.com/rvWEqNY.jpeg" alt="Composante Terre - Entraînement">
+            <img src="https://i.imgur.com/ZDdUEZr.jpeg" alt="Composante Terre - Opérations">
+            <img src="https://i.imgur.com/Kig0UEi.jpeg" alt="Composante Terre - Véhicules">
+        </div>
+    </section>
+
+    <footer>
+        © La Défense Belge - Tous droits réservés
+    </footer>
+
+</body>
+</html>

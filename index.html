@@ -27,12 +27,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(75, 83, 32, 0.25); /* Vert très léger – beaucoup moins dominant */
+            background-color: rgba(75, 83, 32, 0.25);
             z-index: -2;
         }
 
         .container {
-            background-color: rgba(30, 35, 25, 0.35); /* Fond semi-opaque gris-vert foncé pour lisibilité */
+            background-color: rgba(30, 35, 25, 0.45); /* Un peu plus opaque pour meilleure lisibilité */
             backdrop-filter: blur(12px);
             border-radius: 16px;
             padding: 40px;
@@ -83,6 +83,32 @@
         input:focus, select:focus, textarea:focus {
             background-color: rgba(255, 255, 255, 0.22);
             outline: none;
+        }
+
+        /* Style pour le select et ses options */
+        select {
+            appearance: none; /* Enlève la flèche par défaut pour un look plus clean */
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 16px;
+            padding-right: 40px; /* Espace pour la flèche custom */
+        }
+
+        /* Options du select – forcé sombre pour atténuer le bleu natif */
+        select option {
+            background-color: #2a2f24; /* Gris-vert foncé uniforme */
+            color: #ffffff;
+        }
+
+        /* Tentative de override du highlight bleu (marche partiellement sur Chrome) */
+        select option:hover,
+        select option:focus,
+        select option:checked,
+        select option:active {
+            background-color: #3a4220 !important; /* Vert armée un peu plus clair pour le survol */
+            color: #ffffff !important;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.4) !important; /* Ombre pour simuler highlight */
         }
 
         button {

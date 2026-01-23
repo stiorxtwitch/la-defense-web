@@ -6,7 +6,6 @@
     <title>La Défense : Plan et Récapitulatif de Vol</title>
     <link rel="icon" type="image/png" href="https://i.imgur.com/NB1Wt9e.png">
     <style>
-        /* CSS inline pour un design moderne et professionnel */
         body {
             margin: 0;
             padding: 0;
@@ -16,47 +15,47 @@
             background-position: center;
             background-attachment: fixed;
             color: #fff;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
         }
 
         .overlay {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(75, 83, 32, 0.4); /* Opacité réduite pour moins de vert, plus professionnel */
-            z-index: -1;
+            background-color: rgba(75, 83, 32, 0.25); /* Vert très léger – beaucoup moins dominant */
+            z-index: -2;
         }
 
         .container {
-            background-color: rgba(255, 255, 255, 0.15); /* Fond translucide ajusté pour meilleure lisibilité */
-            backdrop-filter: blur(10px); /* Effet flou moderne */
-            border-radius: 15px;
+            background-color: rgba(30, 35, 25, 0.35); /* Fond semi-opaque gris-vert foncé pour lisibilité */
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
             padding: 40px;
-            max-width: 600px;
-            width: 100%;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            text-align: center; /* Centrage pour le logo */
+            max-width: 620px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            z-index: 1;
         }
 
         .logo {
             display: block;
-            margin: 0 auto 20px;
-            max-width: 150px; /* Taille professionnelle pour le logo */
+            margin: 0 auto 25px;
+            max-width: 140px;
             height: auto;
         }
 
         h1 {
             text-align: center;
-            color: #fff; /* Changé en blanc pour meilleur contraste et professionnalisme */
-            font-size: 2.5em;
-            margin-bottom: 30px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+            font-size: 2.3em;
+            margin: 0 0 35px 0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
         }
 
         form {
@@ -67,45 +66,46 @@
         label {
             margin-bottom: 8px;
             font-weight: bold;
-            color: #fff;
+            color: #f0f0f0;
         }
 
         input, select, textarea {
-            margin-bottom: 20px;
-            padding: 12px;
+            margin-bottom: 22px;
+            padding: 14px;
             border: none;
             border-radius: 8px;
-            background-color: rgba(255, 255, 255, 0.2);
-            color: #fff;
-            font-size: 1em;
+            background-color: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            font-size: 1.05em;
             transition: background-color 0.3s ease;
         }
 
         input:focus, select:focus, textarea:focus {
-            background-color: rgba(255, 255, 255, 0.3);
+            background-color: rgba(255, 255, 255, 0.22);
             outline: none;
         }
 
         button {
-            background-color: #4B5320; /* Vert armée */
-            color: #fff;
-            padding: 15px;
+            background-color: #4B5320;
+            color: #ffffff;
+            padding: 16px;
             border: none;
             border-radius: 8px;
-            font-size: 1.2em;
+            font-size: 1.25em;
+            font-weight: bold;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
 
         button:hover {
-            background-color: #3A4220; /* Ton plus foncé pour hover */
+            background-color: #3e451b;
         }
 
         #message {
-            margin-top: 20px;
+            margin-top: 25px;
             text-align: center;
             font-size: 1.1em;
-            color: #fff;
+            color: #e0ffe0;
         }
     </style>
 </head>
@@ -114,6 +114,7 @@
     <div class="container">
         <img src="https://i.imgur.com/NB1Wt9e.png" alt="Logo La Défense" class="logo">
         <h1>La Défense : Plan et Récapitulatif de Vol</h1>
+        
         <form id="volForm">
             <label for="pilote">Nom du Pilote :</label>
             <input type="text" id="pilote" name="pilote" required>
@@ -150,11 +151,12 @@
 
             <button type="submit">Enregistrer le Plan de Vol</button>
         </form>
+        
         <div id="message"></div>
     </div>
 
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycby5AxNnJtWG9KsgRfynMkHvT2ojY6wEFvOZqDAKb-ud56w2ZnBeiZCgxjXMipYto9EX/exec'; // URL Google Apps Script
+        const scriptURL = 'https://script.google.com/macros/s/AKfycby5AxNnJtWG9KsgRfynMkHvT2ojY6wEFvOZqDAKb-ud56w2ZnBeiZCgxjXMipYto9EX/exec';
         const form = document.getElementById('volForm');
         const message = document.getElementById('message');
 

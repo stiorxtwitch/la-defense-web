@@ -1,1 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Composante Médicale - La Défense</title>
+    <link rel="icon" type="image/png" href="https://i.imgur.com/TpQXi2f.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Arial', Helvetica, sans-serif;
+            color: #000000;
+            background-color: #f8f9fa;
+            line-height: 1.6;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #C64E4F;
+        }
+
+        .logo img {
+            height: 55px;
+            margin-right: 12px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 2.5rem;
+        }
+
+        nav ul li a {
+            color: #333333;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #C64E4F;
+        }
+
+        .hero {
+            height: 100vh;
+            min-height: 700px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            padding: 0 5%;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 12px rgba(0,0,0,0.7);
+        }
+
+        .hero p {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #FFCD00;
+            margin: 1rem 0;
+            text-shadow: 0 0 15px rgba(0,0,0,0.6);
+        }
+
+        .content-section {
+            padding: 8rem 5% 6rem;
+            background: #ffffff;
+        }
+
+        .content-section h2 {
+            font-size: 3.2rem;
+            margin-bottom: 2rem;
+            color: #C64E4F;
+            text-align: center;
+        }
+
+        .content-section p {
+            font-size: 1.3rem;
+            max-width: 1000px;
+            margin: 0 auto 2rem;
+            color: #444444;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin: 4rem auto;
+            max-width: 1400px;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: transform 0.4s ease;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+
+        .special-units {
+            background: #f0f4f8;
+            padding: 6rem 5%;
+        }
+
+        .special-units .unit {
+            max-width: 900px;
+            margin: 0 auto 3rem;
+            padding: 2rem;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .special-units h3 {
+            color: #C64E4F;
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 5%;
+            background: #f0f0f0;
+            color: #666666;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="https://i.imgur.com/TpQXi2f.png" alt="Logo La Défense">
+            LA DÉFENSE
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="terre.html">Composante Terre</a></li>
+                <li><a href="mer.html">Composante Mer</a></li>
+                <li><a href="air.html">Composante Air</a></li>
+                <li><a href="medical.html">Composante Médicale</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-video">
+            <iframe 
+                src="https://www.youtube.com/embed/l5mtdWBNXPQ?autoplay=1&mute=1&loop=1&playlist=l5mtdWBNXPQ&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3" 
+                title="La mission de la Défense" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen
+                style="width:100%; height:100%; border:none;">
+            </iframe>
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Composante Médicale</h1>
+            <p>La santé au cœur de la mission</p>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <h2>Présentation de la Composante Médicale</h2>
+        <p>La Composante Médicale (Service Médical) des Forces armées belges est responsable de la santé physique et mentale du personnel militaire, avant, pendant et après les missions, en Belgique comme à l'étranger. Elle fournit un appui médical complet aux autres composantes (Terre, Air, Mer) et participe à des missions humanitaires et de secours en cas de catastrophe.</p>
+        <p>Avec environ 1 855 collaborateurs (dont 158 du Corps Technique Médical et 509 infirmiers/EMT), elle opère via l'Hôpital Militaire Reine Astrid (HMRA), des bataillons médicaux et des éléments d'intervention rapide. Elle garantit des standards de soins élevés, équivalents à ceux du secteur civil, même en environnement opérationnel extrême.</p>
+        <p>Missions principales :</p>
+        <ul style="font-size: 1.3rem; max-width: 900px; margin: 1rem auto 2rem; color: #444; padding-left: 2rem;">
+            <li>Appui médical aux opérations (postes de secours, hôpitaux de campagne, évacuations sanitaires)</li>
+            <li>Préparation médicale et entraînement des unités (formation individuelle et collective)</li>
+            <li>Soins et suivi médical du personnel (prévention, traitement, réadaptation)</li>
+            <li>Soutien aux autorités civiles en cas de crise ou catastrophe</li>
+            <li>Recherche et expertise médicale militaire</li>
+        </ul>
+    </section>
+
+    <section class="content-section">
+        <h2>Unités et Capacités Clés</h2>
+        <p>La Composante Médicale est structurée autour de plusieurs entités opérationnelles et de soutien :</p>
+        
+        <div class="special-units">
+            <div class="unit">
+                <h3>Hôpital Militaire Reine Astrid (HMRA)</h3>
+                <p>Situé à Neder-Over-Heembeek (Bruxelles), c'est le centre de référence pour les soins spécialisés, la formation médicale avancée et le soutien stratégique. Il assure également des consultations pour le personnel et participe à la préparation opérationnelle.</p>
+            </div>
+
+            <div class="unit">
+                <h3>14e Bataillon Médical</h3>
+                <p>Basé à Peutie et Lombardsijde. Composé de compagnies spécialisées : une pour la Composante Air, une pour la Composante Mer, et une qualifiée parachutiste pour le Special Operations Regiment (SOR). Missions : appui médical tactique, évacuation, Role 1/2 en opérations.</p>
+            </div>
+
+            <div class="unit">
+                <h3>23e Bataillon Médical</h3>
+                <p>Basé à Leopoldsburg et Marche-en-Famenne. Soutien principal à la Composante Terre (Motorized Brigade). Inclut des compagnies médicales pour les brigades, avec capacités de Role 1 (premiers soins) et Role 2 (chirurgie légère).</p>
+            </div>
+
+            <div class="unit">
+                <h3>5e Élément Médical d'Intervention (EMI)</h3>
+                <p>Basé à Nivelles. Unité d'intervention rapide pour catastrophes, crises nationales ou déploiement immédiat. Capable de monter des postes médicaux avancés en urgence.</p>
+            </div>
+
+            <div class="unit">
+                <h3>Corps Technique Médical</h3>
+                <p>Médecins, pharmaciens, dentistes, vétérinaires et spécialistes. Ils fournissent l'expertise technique et participent aux opérations comme aux formations.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <h2>Galerie</h2>
+        <div class="gallery">
+            <img src="https://i.imgur.com/ZYTtV6S.jpeg" alt="Équipe médicale en opération">
+            <img src="https://i.imgur.com/R5kJaXY.jpeg" alt="Hôpital de campagne">
+            <img src="https://i.imgur.com/Hfzqp8L.jpeg" alt="Soins en environnement militaire">
+            <img src="https://i.imgur.com/lEpepQ9.jpeg" alt="Personnel médical belge">
+        </div>
+    </section>
+
+    <footer>
+        © La Défense Belge - Tous droits réservés
+    </footer>
+
+</body>
+</html>

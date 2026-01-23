@@ -1,1 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Défense - Votre futur. Notre mission.</title>
+    <link rel="icon" type="image/png" href="https://i.imgur.com/NB1Wt9e.png"> <!-- Logo que tu avais avant -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Arial', Helvetica, sans-serif;
+            color: #ffffff;
+            background-color: #0a0f0a; /* Fond sombre militaire pro */
+            line-height: 1.6;
+        }
+
+        /* Header / Navbar */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(75, 83, 32, 0.3);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .logo img {
+            height: 50px;
+            margin-right: 12px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 2.5rem;
+        }
+
+        nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #a0c000; /* Vert clair armée pour hover */
+        }
+
+        /* Hero section */
+        .hero {
+            height: 100vh;
+            min-height: 700px;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.4)), url('https://i.imgur.com/tmgprZP.jpeg') center/cover no-repeat; /* Image mer comme hero par défaut */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 5%;
+        }
+
+        .hero-content {
+            max-width: 900px;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Citation centrale */
+        .quote {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #a0c000;
+            margin: 3rem 0;
+            text-shadow: 0 0 15px rgba(160, 192, 0, 0.5);
+        }
+
+        /* Missions générales */
+        .missions {
+            padding: 6rem 5% 4rem;
+            text-align: center;
+            background: rgba(20, 25, 20, 0.9);
+        }
+
+        .missions h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: #ffffff;
+        }
+
+        .missions p {
+            font-size: 1.3rem;
+            max-width: 900px;
+            margin: 0 auto 2rem;
+            color: #d0d0d0;
+        }
+
+        /* Composantes grid */
+        .composantes {
+            padding: 0 5% 6rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .card:hover {
+            transform: scale(1.08);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+
+        .card img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .card:hover img {
+            transform: scale(1.15);
+        }
+
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            padding: 2rem 1.5rem 1.5rem;
+            text-align: center;
+        }
+
+        .card h3 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            color: #a0c000;
+        }
+
+        .card p {
+            font-size: 1.1rem;
+            color: #e0e0e0;
+        }
+
+        /* Footer simple */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: #000;
+            color: #888;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="https://i.imgur.com/NB1Wt9e.png" alt="Logo La Défense">
+            LA DÉFENSE
+        </div>
+        <nav>
+            <ul>
+                <li><a href="terre.html">Composante Terre</a></li>
+                <li><a href="mer.html">Composante Mer</a></li>
+                <li><a href="air.html">Composante Air</a></li>
+                <li><a href="medical.html">Composante Médicale</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>La Défense</h1>
+            <p class="quote">La Défense, votre futur. Notre mission.</p>
+        </div>
+    </section>
+
+    <section class="missions">
+        <h2>Nos missions</h2>
+        <p>La Défense belge protège l'avenir de nos citoyens en assurant leur sécurité au quotidien, en Belgique comme à l'étranger.</p>
+        <p>À travers des missions internationales, un soutien à la nation en cas de crise, et la défense du territoire, nos forces terrestres, aériennes, navales et médicales contribuent à la paix, à la stabilité et à la protection collective au sein de l'OTAN, de l'UE et des Nations Unies.</p>
+        <p>L'essentiel est de savoir pour qui nous accomplissons notre devoir : pour vous, pour notre pays, pour un avenir sécurisé.</p>
+    </section>
+
+    <section class="composantes">
+        <a href="terre.html" class="card">
+            <img src="https://i.imgur.com/SsUbF5P.jpeg" alt="Composante Terre">
+            <div class="card-overlay">
+                <h3>Composante Terre</h3>
+                <p>Défense du territoire, opérations au sol, engagement terrestre.</p>
+            </div>
+        </a>
+
+        <a href="mer.html" class="card">
+            <img src="https://i.imgur.com/tmgprZP.jpeg" alt="Composante Mer">
+            <div class="card-overlay">
+                <h3>Composante Mer</h3>
+                <p>Protection maritime, opérations navales, sécurité en mer.</p>
+            </div>
+        </a>
+
+        <a href="air.html" class="card">
+            <img src="https://i.imgur.com/gNPFdYs.jpeg" alt="Composante Air">
+            <div class="card-overlay">
+                <h3>Composante Air</h3>
+                <p>Supériorité aérienne, transport, surveillance et soutien aérien.</p>
+            </div>
+        </a>
+
+        <a href="medical.html" class="card">
+            <img src="https://i.imgur.com/d9mb7ul.jpeg" alt="Composante Médicale">
+            <div class="card-overlay">
+                <h3>Composante Médicale</h3>
+                <p>Soins et santé du personnel, appui médical en opérations.</p>
+            </div>
+        </a>
+    </section>
+
+    <footer>
+        © La Défense Belge - Tous droits réservés
+    </footer>
+
+</body>
+</html>

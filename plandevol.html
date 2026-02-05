@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Défense : Plan et Récapitulatif de Vol</title>
     <link rel="icon" type="image/png" href="https://i.imgur.com/cotrnBV.png">
+
     <style>
-        /* ⚠️ DESIGN STRICTEMENT IDENTIQUE */
         body {
             margin: 0;
             padding: 0;
@@ -24,10 +24,7 @@
 
         .overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background-color: rgba(75, 83, 32, 0.25);
             z-index: -2;
         }
@@ -42,7 +39,6 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.12);
             z-index: 1;
-            position: relative;
         }
 
         .logo {
@@ -63,15 +59,57 @@
             display: block;
         }
 
-        input, select, textarea {
+        input,
+        select,
+        textarea {
             width: 100%;
             padding: 14px;
             margin-bottom: 22px;
             border-radius: 8px;
             border: none;
+            font-size: 1.05em;
             background-color: rgba(255, 255, 255, 0.12);
-            color: white;
+            color: #ffffff;
         }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.22);
+        }
+
+        /* ===================== */
+        /* ✅ FIX BUG SELECT     */
+        /* ===================== */
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        select option {
+            background-color: #2a2f24;
+            color: #ffffff;
+        }
+
+        select option:hover,
+        select option:focus,
+        select option:checked {
+            background-color: #4B5320 !important;
+            color: #ffffff !important;
+        }
+
+        select:focus option {
+            background-color: #2a2f24;
+            color: #ffffff;
+        }
+
+        /* ===================== */
 
         button {
             background-color: #4B5320;
@@ -80,18 +118,25 @@
             font-size: 1.25em;
             border-radius: 8px;
             border: none;
+            font-weight: bold;
             cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #3e451b;
         }
 
         #message {
             margin-top: 25px;
             text-align: center;
+            font-size: 1.1em;
         }
 
         #loadingOverlay {
             position: fixed;
             inset: 0;
-            background-color: rgba(0,0,0,0.75);
+            background-color: rgba(0, 0, 0, 0.75);
             display: none;
             justify-content: center;
             align-items: center;
@@ -106,20 +151,23 @@
         #loadingOverlay p {
             font-size: 1.8em;
             margin-top: 20px;
+            font-weight: bold;
         }
     </style>
 </head>
+
 <body>
 
 <div class="overlay"></div>
 
 <div id="loadingOverlay">
-    <img src="https://www.pngmart.com/files/23/Loading-PNG-Photos.gif">
+    <img src="https://www.pngmart.com/files/23/Loading-PNG-Photos.gif" alt="Chargement">
     <p>Envoi en cours</p>
 </div>
 
 <div class="container">
-    <img src="https://i.imgur.com/cotrnBV.png" class="logo">
+    <img src="https://i.imgur.com/cotrnBV.png" class="logo" alt="Logo">
+
     <h1>La Défense : Plan et Récapitulatif de Vol</h1>
 
     <form id="volForm">
@@ -147,14 +195,14 @@
         <label>Type d'Avion :</label>
         <select id="typeAvion" required>
             <option value="">Sélectionnez...</option>
-            <option>Hélicoptère</option>
-            <option>Avion de Chasse</option>
-            <option>Transport / Commercial</option>
-            <option>Autre</option>
+            <option value="Hélicoptère">Hélicoptère</option>
+            <option value="Avion de Chasse">Avion de Chasse</option>
+            <option value="Transport / Commercial">Transport / Commercial</option>
+            <option value="Autre">Autre</option>
         </select>
 
-        <label>Notes :</label>
-        <textarea id="notes"></textarea>
+        <label>Notes Supplémentaires :</label>
+        <textarea id="notes" rows="4"></textarea>
 
         <button type="submit">Enregistrer le Plan de Vol</button>
     </form>
@@ -165,11 +213,16 @@
 <script>
 const WEBHOOK_URL = "https://discord.com/api/webhooks/1469078801890672833/fLPN-HKIyjKFrcaaRK-HhyOf8O-gDM8IO2HQWbb9QuFDGmCtw1h_9j8NCZP9SzIOL7ZV";
 
-document.getElementById("volForm").addEventListener("submit", async e => {
+document.getElementById("volForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    document.getElementById("loadingOverlay").style.display = "flex";
-    const start = Date.now();
+    const loading = document.getElementById("loadingOverlay");
+    const message = document.getElementById("message");
+    loading.style.display = "flex";
+    message.textContent = "";
+
+    const startTime = Date.now();
+    const MIN_DURATION = 10000;
 
     const embed = {
         title: "🛩️ Nouveau Plan de Vol",
@@ -182,24 +235,32 @@ document.getElementById("volForm").addEventListener("submit", async e => {
             { name: "⏱️ Arrivée", value: heureArrivee.value, inline: true },
             { name: "📍 Départ", value: depart.value, inline: true },
             { name: "📍 Arrivée", value: arrivee.value, inline: true },
-            { name: "🛩️ Avion", value: typeAvion.value, inline: true },
-            { name: "📝 Notes", value: notes.value || "Aucune" }
+            { name: "🛩️ Type", value: typeAvion.value, inline: true },
+            { name: "📝 Notes", value: notes.value || "Aucune information" }
         ],
-        footer: { text: "La Défense — Plan de Vol" },
+        footer: {
+            text: "La Défense — Plan de Vol"
+        },
         timestamp: new Date()
     };
 
-    await fetch(WEBHOOK_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ embeds: [embed] })
-    });
+    try {
+        await fetch(WEBHOOK_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ embeds: [embed] })
+        });
+    } catch (err) {
+        message.textContent = "Erreur lors de l'envoi.";
+    }
 
-    const wait = 10000 - (Date.now() - start);
-    if (wait > 0) await new Promise(r => setTimeout(r, wait));
+    const elapsed = Date.now() - startTime;
+    if (elapsed < MIN_DURATION) {
+        await new Promise(r => setTimeout(r, MIN_DURATION - elapsed));
+    }
 
-    document.getElementById("loadingOverlay").style.display = "none";
-    document.getElementById("message").textContent = "Plan de vol envoyé sur Discord ✅";
+    loading.style.display = "none";
+    message.textContent = "Plan de vol envoyé sur Discord ✅";
     e.target.reset();
 });
 </script>

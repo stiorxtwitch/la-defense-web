@@ -10,7 +10,7 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
             background-image: url('https://i.imgur.com/7yarc9G.jpeg');
             background-size: cover;
             background-position: center;
@@ -59,33 +59,25 @@
             display: block;
         }
 
-        input,
-        select,
-        textarea {
+        input, select, textarea {
             width: 100%;
             padding: 14px;
             margin-bottom: 22px;
             border-radius: 8px;
             border: none;
             font-size: 1.05em;
-            background-color: rgba(255, 255, 255, 0.12);
-            color: #ffffff;
+            background-color: rgba(255,255,255,0.12);
+            color: #fff;
         }
 
-        input:focus,
-        select:focus,
-        textarea:focus {
+        input:focus, select:focus, textarea:focus {
             outline: none;
-            background-color: rgba(255, 255, 255, 0.22);
+            background-color: rgba(255,255,255,0.22);
         }
-
-        /* ===================== */
-        /* ✅ FIX BUG SELECT     */
-        /* ===================== */
 
         select {
             appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
             background-repeat: no-repeat;
             background-position: right 14px center;
             background-size: 16px;
@@ -94,33 +86,23 @@
 
         select option {
             background-color: #2a2f24;
-            color: #ffffff;
+            color: #fff;
         }
 
         select option:hover,
-        select option:focus,
         select option:checked {
             background-color: #4B5320 !important;
-            color: #ffffff !important;
         }
-
-        select:focus option {
-            background-color: #2a2f24;
-            color: #ffffff;
-        }
-
-        /* ===================== */
 
         button {
             background-color: #4B5320;
-            color: white;
+            color: #fff;
             padding: 16px;
             font-size: 1.25em;
             border-radius: 8px;
             border: none;
             font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
 
         button:hover {
@@ -136,7 +118,7 @@
         #loadingOverlay {
             position: fixed;
             inset: 0;
-            background-color: rgba(0, 0, 0, 0.75);
+            background-color: rgba(0,0,0,0.75);
             display: none;
             justify-content: center;
             align-items: center;
@@ -151,7 +133,6 @@
         #loadingOverlay p {
             font-size: 1.8em;
             margin-top: 20px;
-            font-weight: bold;
         }
     </style>
 </head>
@@ -161,21 +142,29 @@
 <div class="overlay"></div>
 
 <div id="loadingOverlay">
-    <img src="https://www.pngmart.com/files/23/Loading-PNG-Photos.gif" alt="Chargement">
+    <img src="https://www.pngmart.com/files/23/Loading-PNG-Photos.gif">
     <p>Envoi en cours</p>
 </div>
 
 <div class="container">
-    <img src="https://i.imgur.com/cotrnBV.png" class="logo" alt="Logo">
-
+    <img src="https://i.imgur.com/cotrnBV.png" class="logo">
     <h1>La Défense : Plan et Récapitulatif de Vol</h1>
 
     <form id="volForm">
-        <label>Nom du Pilote :</label>
+        <label>Pilote (Nom + Prénom) :</label>
         <input id="pilote" required>
 
-        <label>Numéro de Vol :</label>
-        <input id="numeroVol" required>
+        <label>Co-Pilote (Nom + Prénom) :</label>
+        <input id="copilote">
+
+        <label>Transpondeur de l’aéronef :</label>
+        <input id="transpondeur" required>
+
+        <label>Modèle de l’aéronef :</label>
+        <input id="modeleAvion" required>
+
+        <label>Nombre de personnes à bord :</label>
+        <input type="number" id="nbPersonnes" min="1" required>
 
         <label>Date du Vol :</label>
         <input type="date" id="date" required>
@@ -195,14 +184,17 @@
         <label>Type d'Avion :</label>
         <select id="typeAvion" required>
             <option value="">Sélectionnez...</option>
-            <option value="Hélicoptère">Hélicoptère</option>
-            <option value="Avion de Chasse">Avion de Chasse</option>
-            <option value="Transport / Commercial">Transport / Commercial</option>
-            <option value="Autre">Autre</option>
+            <option>Hélicoptère</option>
+            <option>Avion de Chasse</option>
+            <option>Transport / Commercial</option>
+            <option>Autre</option>
         </select>
 
+        <label>Passagers (un par ligne) :</label>
+        <textarea id="passagers" rows="4"></textarea>
+
         <label>Notes Supplémentaires :</label>
-        <textarea id="notes" rows="4"></textarea>
+        <textarea id="notes" rows="3"></textarea>
 
         <button type="submit">Enregistrer le Plan de Vol</button>
     </form>
@@ -213,7 +205,7 @@
 <script>
 const WEBHOOK_URL = "https://discord.com/api/webhooks/1469078801890672833/fLPN-HKIyjKFrcaaRK-HhyOf8O-gDM8IO2HQWbb9QuFDGmCtw1h_9j8NCZP9SzIOL7ZV";
 
-document.getElementById("volForm").addEventListener("submit", async (e) => {
+document.getElementById("volForm").addEventListener("submit", async e => {
     e.preventDefault();
 
     const loading = document.getElementById("loadingOverlay");
@@ -225,34 +217,32 @@ document.getElementById("volForm").addEventListener("submit", async (e) => {
     const MIN_DURATION = 10000;
 
     const embed = {
-        title: "🛩️ Nouveau Plan de Vol",
+        title: "🛩️ Plan de Vol – Enregistrement",
         color: 0x4B5320,
         fields: [
             { name: "👤 Pilote", value: pilote.value, inline: true },
-            { name: "✈️ Vol", value: numeroVol.value, inline: true },
+            { name: "👤 Co-Pilote", value: copilote.value || "Aucun", inline: true },
+            { name: "📡 Transpondeur", value: transpondeur.value, inline: true },
+            { name: "✈️ Modèle", value: modeleAvion.value, inline: true },
+            { name: "👥 Personnes à bord", value: nbPersonnes.value, inline: true },
             { name: "📅 Date", value: date.value, inline: true },
             { name: "⏱️ Départ", value: heureDepart.value, inline: true },
             { name: "⏱️ Arrivée", value: heureArrivee.value, inline: true },
             { name: "📍 Départ", value: depart.value, inline: true },
             { name: "📍 Arrivée", value: arrivee.value, inline: true },
             { name: "🛩️ Type", value: typeAvion.value, inline: true },
-            { name: "📝 Notes", value: notes.value || "Aucune information" }
+            { name: "🧍 Passagers", value: passagers.value || "Aucun" },
+            { name: "📝 Notes", value: notes.value || "Aucune" }
         ],
-        footer: {
-            text: "La Défense — Plan de Vol"
-        },
+        footer: { text: "La Défense — Plan de Vol" },
         timestamp: new Date()
     };
 
-    try {
-        await fetch(WEBHOOK_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ embeds: [embed] })
-        });
-    } catch (err) {
-        message.textContent = "Erreur lors de l'envoi.";
-    }
+    await fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ embeds: [embed] })
+    });
 
     const elapsed = Date.now() - startTime;
     if (elapsed < MIN_DURATION) {

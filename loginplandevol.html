@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion – La Défense</title>
+<link rel="icon" href="https://i.imgur.com/cotrnBV.png">
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-image: url('https://i.imgur.com/7yarc9G.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(75,83,32,0.25);
+}
+
+.container {
+    background-color: rgba(30,35,25,0.45);
+    backdrop-filter: blur(12px);
+    padding: 40px;
+    border-radius: 16px;
+    width: 380px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    z-index: 1;
+}
+
+.logo {
+    display: block;
+    margin: 0 auto 20px;
+    max-width: 120px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 6px;
+    display: block;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: none;
+    background-color: rgba(255,255,255,0.12);
+    color: white;
+}
+
+button {
+    width: 100%;
+    padding: 16px;
+    background-color: #4B5320;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #3e451b;
+}
+
+#message {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#loadingOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 9999;
+}
+
+#loadingOverlay img {
+    width: 120px;
+}
+
+#loadingOverlay p {
+    font-size: 1.6em;
+    margin-top: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay"></div>
+
+<div id="loadingOverlay">
+    <img src="https://www.pngmart.com/files/23/Loading-PNG-Photos.gif">
+    <p>Connexion...</p>
+</div>
+
+<div class="container">
+    <img src="https://i.imgur.com/cotrnBV.png" class="logo">
+    <h1>Accès Sécurisé</h1>
+
+    <label>Nom d'utilisateur</label>
+    <input id="username">
+
+    <label>Mot de passe</label>
+    <input type="password" id="password">
+
+    <button onclick="login()">Connexion</button>
+
+    <div id="message"></div>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwFPcCUsGsdoQ8ehBHCDIo61466DdCduDgcv_SKyO8eDG5tylHHWPYE6z-hUb0sNxoOzw/exec";
+
+async function login() {
+    const loading = document.getElementById("loadingOverlay");
+    const message = document.getElementById("message");
+    loading.style.display = "flex";
+    message.textContent = "";
+
+    const payload = {
+        username: username.value,
+        password: password.value
+    };
+
+    try {
+        const res = await fetch(SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        await new Promise(r => setTimeout(r, 2000));
+
+        if (data.success) {
+            localStorage.setItem("auth", "true");
+            window.location.href = "plandevol.html";
+        } else {
+            message.textContent = "Identifiants incorrects ❌";
+        }
+    } catch (e) {
+        message.textContent = "Erreur serveur";
+    }
+
+    loading.style.display = "none";
+}
+</script>
+
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Défense : Logs des Plans de Vol</title>
+    <title>La Défense : Connexion</title>
     <link rel="icon" type="image/png" href="https://i.imgur.com/cotrnBV.png">
     <style>
         body {
@@ -18,6 +18,7 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
+            align-items: center;
         }
         .overlay {
             position: fixed;
@@ -29,74 +30,61 @@
             background-color: rgba(30, 35, 25, 0.45);
             backdrop-filter: blur(12px);
             border-radius: 16px;
-            padding: 40px;
-            max-width: 900px;
+            padding: 50px 40px;
+            max-width: 480px;
             width: 90%;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.12);
-            z-index: 1;
-            margin: 40px 0;
-            overflow-y: auto;
-            max-height: 90vh;
+            text-align: center;
         }
         .logo {
-            display: block;
-            margin: 0 auto 25px;
-            max-width: 140px;
+            max-width: 160px;
+            margin-bottom: 30px;
         }
         h1 {
-            text-align: center;
-            font-size: 2.3em;
-            margin-bottom: 20px;
-        }
-        h2 {
-            text-align: center;
-            margin: 40px 0 30px;
-            font-size: 1.8em;
-        }
-        .nav-header {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
+            font-size: 2.4em;
             margin-bottom: 40px;
-            flex-wrap: wrap;
         }
-        .nav-button {
-            background-color: #4B5320;
-            color: #fff;
-            padding: 14px 28px;
-            font-size: 1.1em;
+        label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: block;
+            text-align: left;
+        }
+        input {
+            width: 100%;
+            padding: 16px;
+            margin-bottom: 25px;
             border-radius: 8px;
             border: none;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background-color 0.2s;
+            font-size: 1.1em;
+            background-color: rgba(255,255,255,0.12);
+            color: white;
         }
-        .nav-button:hover {
+        input:focus {
+            outline: none;
+            background-color: rgba(255,255,255,0.25);
+        }
+        button {
+            background-color: #4B5320;
+            color: white;
+            border: none;
+            padding: 18px;
+            font-size: 1.3em;
+            border-radius: 8px;
+            width: 100%;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        button:hover {
             background-color: #3e451b;
         }
-        .log-entry {
-            background-color: rgba(255,255,255,0.08);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .log-field {
-            margin-bottom: 10px;
-            font-size: 1.05em;
-        }
-        .log-field strong {
-            color: #e0e0e0;
-            min-width: 160px;
-            display: inline-block;
-        }
-        .log-timestamp {
-            color: #aaa;
-            font-size: 0.95em;
-            margin-top: 12px;
-            text-align: right;
+        #error {
+            margin-top: 20px;
+            color: #ff5555;
+            font-size: 1.1em;
+            min-height: 24px;
         }
         #loadingOverlay {
             position: fixed;
@@ -115,107 +103,80 @@
             font-size: 1.8em;
             margin-top: 20px;
         }
-        #logsList:empty::before {
-            content: "Aucun plan de vol enregistré pour le moment...";
-            display: block;
-            text-align: center;
-            color: #aaa;
-            font-style: italic;
-            padding: 40px 0;
-        }
     </style>
 </head>
 <body>
+
 <div class="overlay"></div>
 
 <div id="loadingOverlay">
     <img src="https://www.pngmart.com/files/23/Loading-PNG-Photos.gif">
-    <p>Chargement des logs...</p>
+    <p>Connexion en cours...</p>
 </div>
 
 <div class="container">
     <img src="https://i.imgur.com/cotrnBV.png" class="logo" alt="Logo La Défense">
-    <h1>La Défense : Logs des Plans de Vol</h1>
 
-    <div class="nav-header">
-        <a href="logsplanvol.html" class="nav-button">Logs Plans de Vol</a>
-        <a href="gestionppl.html" class="nav-button">Gestion PPL</a>
-        <a href="rapportincident.html" class="nav-button">Rapport Incident</a>
-    </div>
+    <h1>Connexion</h1>
 
-    <div id="logsSection">
-        <h2>Les 100 Derniers Plans de Vol</h2>
-        <div id="logsList"></div>
-    </div>
+    <form id="loginForm">
+        <label for="username">Nom d'utilisateur :</label>
+        <input type="text" id="username" autocomplete="username" required>
+
+        <label for="password">Mot de passe :</label>
+        <input type="password" id="password" autocomplete="current-password" required>
+
+        <button type="submit">Se connecter</button>
+    </form>
+
+    <div id="error"></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
-    const SUPABASE_URL = 'https://gktawbaposndfxijkxdk.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk';
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwFPcCUsGsdoQ8ehBHCDIo61466DdCduDgcv_SKyO8eDG5tylHHWPYE6z-hUb0sNxoOzw/exec";  // ← Remplace par l'URL de ton déploiement Apps Script (ex: https://script.google.com/macros/s/xxxx/exec)
 
-    async function fetchLogs() {
+    document.getElementById("loginForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        const errorDiv = document.getElementById("error");
         const loading = document.getElementById("loadingOverlay");
+
+        errorDiv.textContent = "";
         loading.style.display = "flex";
 
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value;
+
+        if (!username || !password) {
+            errorDiv.textContent = "Veuillez remplir tous les champs.";
+            loading.style.display = "none";
+            return;
+        }
+
         try {
-            // Ligne corrigée : supabase (minuscule) au lieu de Supabase
-            const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-            const { data, error } = await supabaseClient
-                .from('logs-plandevol')
-                .select('*')
-                .order('created_at', { ascending: false })
-                .limit(100);
-
-            if (error) {
-                console.error('Erreur lors de la récupération des logs:', error);
-                document.getElementById('logsList').innerHTML = '<p style="color: #ff5555; text-align: center;">Erreur lors du chargement des logs...</p>';
-                return;
-            }
-
-            const logsList = document.getElementById('logsList');
-            logsList.innerHTML = '';
-
-            if (data.length === 0) {
-                logsList.innerHTML = '<p style="text-align: center; color: #aaa;">Aucun plan de vol enregistré pour le moment.</p>';
-                return;
-            }
-
-            data.forEach(log => {
-                const entry = document.createElement('div');
-                entry.classList.add('log-entry');
-
-                entry.innerHTML = `
-                    <div class="log-field"><strong>Pilote :</strong> ${log.pilote || '—'}</div>
-                    <div class="log-field"><strong>Co-Pilote :</strong> ${log.copilote || 'Aucun'}</div>
-                    <div class="log-field"><strong>Transpondeur :</strong> ${log.transpondeur || '—'}</div>
-                    <div class="log-field"><strong>Modèle avion :</strong> ${log.modele || '—'}</div>
-                    <div class="log-field"><strong>Nombre de personnes :</strong> ${log.nbrpersonne || '—'}</div>
-                    <div class="log-field"><strong>Date du vol :</strong> ${log.dateduvol || '—'}</div>
-                    <div class="log-field"><strong>Heure départ :</strong> ${log.heuredepart || '—'}</div>
-                    <div class="log-field"><strong>Heure arrivée :</strong> ${log.heurearrive || '—'}</div>
-                    <div class="log-field"><strong>Lieu départ :</strong> ${log.lieudepart || '—'}</div>
-                    <div class="log-field"><strong>Lieu arrivée :</strong> ${log.lieuarrive || '—'}</div>
-                    <div class="log-field"><strong>Type avion :</strong> ${log.typeavion || '—'}</div>
-                    <div class="log-field"><strong>Passagers :</strong> <pre style="margin:0; white-space:pre-wrap;">${log.passagers || 'Aucun'}</pre></div>
-                    <div class="log-field"><strong>Notes :</strong> <pre style="margin:0; white-space:pre-wrap;">${log.notes || 'Aucune'}</pre></div>
-                    <div class="log-timestamp">Enregistré le : ${new Date(log.created_at).toLocaleString('fr-FR')}</div>
-                `;
-
-                logsList.appendChild(entry);
+            const response = await fetch(SCRIPT_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ username, password })
             });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Connexion réussie → redirection
+                window.location.href = "logsplanvol.html";
+            } else {
+                errorDiv.textContent = "Identifiants incorrects.";
+            }
         } catch (err) {
             console.error(err);
-            document.getElementById('logsList').innerHTML = '<p style="color: #ff5555; text-align: center;">Erreur de connexion au service...</p>';
+            errorDiv.textContent = "Erreur de connexion au serveur.";
         } finally {
             loading.style.display = "none";
         }
-    }
-
-    // Charger les logs au démarrage
-    fetchLogs();
+    });
 </script>
 </body>
 </html>

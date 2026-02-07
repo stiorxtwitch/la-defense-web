@@ -56,17 +56,18 @@ button:hover { background:#3e451b; }
     <div id="error"></div>
 </div>
 
-<!-- Inclure Supabase JS -->
+<!-- Inclure Supabase JS UNE SEULE FOIS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
     // ==============================================
     // CONFIGURATION SUPABASE
     // ==============================================
-    const SUPABASE_URL = 'https://gktawbaposndfxijkxdk.supabase.co'; // ton URL Supabase
+    const SUPABASE_URL = 'https://gktawbaposndfxijkxdk.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk';
 
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // CRÉATION DU CLIENT SUPABASE (UNE FOIS)
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const loginForm = document.getElementById("loginForm");
     const errorDiv = document.getElementById("error");
@@ -88,8 +89,8 @@ button:hover { background:#3e451b; }
 
         try{
             // Vérification dans Supabase
-            const { data, error } = await supabase
-                .from("login-pplgestion") // table Supabase
+            const { data, error } = await supabaseClient
+                .from("login-pplgestion") // Table Supabase
                 .select("*")
                 .eq("username", username)
                 .eq("password", password)

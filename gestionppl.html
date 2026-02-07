@@ -195,7 +195,7 @@
         <a href="rapportincident.html" class="nav-button">Rapport Incident</a>
     </div>
 
-    <button class="create-btn" id="btnCreate">+ Créer un profil</button>
+    <button class="create-btn" id="btnCreateProfile">+ Créer un profil</button>
 
     <ul class="person-list" id="personList"></ul>
 
@@ -209,7 +209,7 @@
     </div>
 </div>
 
-<!-- Modal pour création de profil -->
+<!-- Modal création profil -->
 <div id="createModal" class="modal">
     <div class="modal-content">
         <h2>Créer un profil PPL</h2>
@@ -263,16 +263,17 @@
 
 <script>
     // ==============================================
-    // SUPABASE – DÉCLARATION UNIQUE ET UNIQUE
+    // SUPABASE — UNE SEULE DÉCLARATION ICI
     // ==============================================
     const SUPABASE_URL = 'https://gktawbaposndfxijkxdk.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk';
 
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    console.log("Supabase chargé avec succès");
-
     const loading = document.getElementById('loadingOverlay');
+
+    // Vérification rapide (optionnel)
+    console.log("Supabase chargé");
 
     // ==============================================
     // FONCTIONS
@@ -305,7 +306,7 @@
             });
         } catch (err) {
             console.error('Erreur chargement profils:', err);
-            document.getElementById('personList').innerHTML = '<p style="color:#ff5555; text-align:center;">Erreur de chargement</p>';
+            document.getElementById('personList').innerHTML = '<p style="color:#ff5555; text-align:center;">Erreur chargement</p>';
         } finally {
             loading.style.display = 'none';
         }
@@ -314,16 +315,16 @@
     function showDetail(person) {
         document.getElementById('detailName').textContent = `${person.prenom || ''} ${person.nom || ''}`;
 
-        const photo = document.getElementById('detailPhoto');
+        const photoEl = document.getElementById('detailPhoto');
         if (person.linkimage) {
-            photo.src = person.linkimage;
-            photo.style.display = 'block';
+            photoEl.src = person.linkimage;
+            photoEl.style.display = 'block';
         } else {
-            photo.style.display = 'none';
+            photoEl.style.display = 'none';
         }
 
         document.getElementById('detailInfo').innerHTML = `
-            <p><strong>Date :</strong> ${person.datedepassage || '—'}</p>
+            <p><strong>Date de passage :</strong> ${person.datedepassage || '—'}</p>
             <p><strong>Théorie Avion :</strong> ${person.theorieavion ? 'Oui' : 'Non'}</p>
             <p><strong>Permis Avion :</strong> ${person.permisavion ? 'Oui' : 'Non'}</p>
             <p><strong>Théorie Hélico :</strong> ${person.theoriehelico ? 'Oui' : 'Non'}</p>
@@ -354,7 +355,7 @@
             container.innerHTML = '';
 
             if (!data || data.length === 0) {
-                container.innerHTML = '<p>Aucun vol trouvé</p>';
+                container.innerHTML = '<p>Aucun plan de vol trouvé.</p>';
                 return;
             }
 
@@ -372,7 +373,7 @@
             });
         } catch (err) {
             console.error(err);
-            container.innerHTML = '<p style="color:#ff5555;">Erreur vols</p>';
+            container.innerHTML = '<p style="color:#ff5555;">Erreur chargement vols</p>';
         }
     }
 
@@ -382,10 +383,8 @@
 
     function openModal() {
         document.getElementById('createModal').style.display = 'flex';
-        // Reset tous les champs
         document.querySelectorAll('#createModal input, #createModal select').forEach(el => {
-            if (el.type === 'select-one') el.value = 'false';
-            else el.value = '';
+            el.value = el.type === 'select-one' ? 'false' : '';
         });
     }
 
@@ -398,11 +397,11 @@
         const prenom = document.getElementById('inputPrenom').value.trim();
 
         if (!nom || !prenom) {
-            alert("Nom et Prénom obligatoires !");
+            alert('Nom et Prénom obligatoires !');
             return;
         }
 
-        const data = {
+        const payload = {
             nom,
             prenom,
             datedepassage: document.getElementById('inputDatePassage').value || null,
@@ -415,7 +414,7 @@
         };
 
         try {
-            const { error } = await supabase.from('ppl-gestion').insert([data]);
+            const { error } = await supabase.from('ppl-gestion').insert([payload]);
             if (error) throw error;
 
             alert('Profil créé !');
@@ -428,13 +427,10 @@
     }
 
     // ==============================================
-    // ÉVÈNEMENTS + DÉMARRAGE
+    // DÉMARRAGE
     // ==============================================
     document.addEventListener('DOMContentLoaded', () => {
-        // Bouton Créer un profil
-        document.getElementById('btnCreate').addEventListener('click', openModal);
-
-        // Lancement initial
+        document.getElementById('btnCreateProfile').addEventListener('click', openModal);
         loadPersons();
     });
 </script>

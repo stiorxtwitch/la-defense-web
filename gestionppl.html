@@ -262,7 +262,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-    // === CONFIGURATION SUPABASE (déclarée UNE SEULE FOIS) ===
+    // ============================================
+    // CONFIG SUPABASE – UNE SEULE DÉCLARATION
+    // ============================================
     const SUPABASE_URL = 'https://gktawbaposndfxijkxdk.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk';
 
@@ -270,14 +272,17 @@
 
     const loading = document.getElementById('loadingOverlay');
 
-    // Vérification rapide que Supabase est chargé
+    // Vérification que Supabase est bien disponible
     if (typeof supabase === 'undefined' || !supabase.from) {
-        console.error("Supabase n'est pas chargé correctement");
-        loading.innerHTML = '<p style="color:#ff5555;">Erreur : Impossible de se connecter à la base de données</p>';
+        console.error("Supabase non chargé ou non fonctionnel");
+        loading.innerHTML = '<p style="color:#ff5555;">Erreur : connexion à la base de données impossible</p>';
         loading.style.display = 'flex';
     }
 
-    // === CHARGEMENT DE LA LISTE DES PERSONNES ===
+    // ============================================
+    // FONCTIONS
+    // ============================================
+
     async function loadPersons() {
         loading.style.display = 'flex';
         try {
@@ -311,7 +316,6 @@
         }
     }
 
-    // === AFFICHAGE DÉTAILS ===
     function showDetail(person) {
         document.getElementById('detailName').textContent = `${person.prenom || ''} ${person.nom || ''}`;
 
@@ -339,7 +343,6 @@
         window.scrollTo({ top: document.getElementById('detailPanel').offsetTop - 100, behavior: 'smooth' });
     }
 
-    // === CHARGEMENT DES VOLS ===
     async function loadFlights(nom, prenom) {
         const list = document.getElementById('flightsList');
         list.innerHTML = '<p>Chargement des vols...</p>';
@@ -384,7 +387,6 @@
         document.getElementById('detailPanel').style.display = 'none';
     }
 
-    // === MODAL AJOUT ===
     function openModal() {
         document.getElementById('createModal').style.display = 'flex';
         document.getElementById('inputNom').value = '';
@@ -436,7 +438,7 @@
         }
     }
 
-    // === CHARGEMENT INITIAL ===
+    // Chargement initial
     loadPersons();
 </script>
 </body>

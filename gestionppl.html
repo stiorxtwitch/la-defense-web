@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestion PPL</title>
+<title>La Défense : Gestion PPL</title>
+
+<!-- ICON -->
+<link rel="icon" type="image/png" href="https://i.imgur.com/cotrnBV.png">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -21,6 +24,33 @@ body {
     background: rgba(30,35,25,0.45);
     backdrop-filter: blur(12px);
     border-radius: 16px;
+}
+.logo {
+    display: block;
+    margin: 0 auto 25px;
+    max-width: 140px;
+}
+h1 {
+    text-align: center;
+    margin-bottom: 25px;
+}
+.nav-header {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 35px;
+    flex-wrap: wrap;
+}
+.nav-button {
+    background-color: #4B5320;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+}
+.nav-button:hover {
+    background-color: #3e451b;
 }
 .person-item {
     padding: 15px;
@@ -57,10 +87,23 @@ button {
 <body>
 
 <div class="container">
+
+    <!-- LOGO -->
+    <img src="https://i.imgur.com/cotrnBV.png" class="logo" alt="Logo">
+
     <h1>Gestion PPL</h1>
 
+    <!-- NAVIGATION -->
+    <div class="nav-header">
+        <a href="logsplanvol.html" class="nav-button">Logs Plans de Vol</a>
+        <a href="gestionppl.html" class="nav-button">Gestion PPL</a>
+        <a href="rapportincident.html" class="nav-button">Rapport Incident</a>
+    </div>
+
+    <!-- LISTE PPL -->
     <ul id="personList"></ul>
 
+    <!-- DÉTAIL -->
     <div id="detailPanel" class="detail-panel">
         <h2 id="detailName"></h2>
         <div id="detailInfo"></div>
@@ -70,6 +113,7 @@ button {
 
         <button onclick="closeDetail()">Fermer</button>
     </div>
+
 </div>
 
 <script>
@@ -108,7 +152,7 @@ async function loadPersons() {
     });
 }
 
-/* ===================== DÉTAIL PPL ===================== */
+/* ===================== DÉTAIL ===================== */
 
 function showDetail(person) {
     document.getElementById('detailName').textContent =
@@ -123,11 +167,10 @@ function showDetail(person) {
     `;
 
     loadFlightsForPilot(person.nom, person.prenom);
-
     document.getElementById('detailPanel').style.display = 'block';
 }
 
-/* ===================== MATCH PILOTE (PRENOM NOM / NOM PRENOM) ===================== */
+/* ===================== MATCH PILOTE ===================== */
 
 async function loadFlightsForPilot(nom, prenom) {
     const flightsList = document.getElementById('flightsList');
@@ -139,9 +182,7 @@ async function loadFlightsForPilot(nom, prenom) {
     const { data, error } = await supabaseClient
         .from('logs-plandevol')
         .select('*')
-        .or(
-            `pilote.ilike.${prenomNom},pilote.ilike.${nomPrenom}`
-        )
+        .or(`pilote.ilike.${prenomNom},pilote.ilike.${nomPrenom}`)
         .order('created_at', { ascending: false });
 
     if (error || !data || data.length === 0) {

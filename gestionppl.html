@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>La Défense : Gestion PPL</title>
 
-<!-- ICON -->
 <link rel="icon" type="image/png" href="https://i.imgur.com/cotrnBV.png">
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -49,9 +47,7 @@ h1 {
     text-decoration: none;
     font-weight: bold;
 }
-.nav-button:hover {
-    background-color: #3e451b;
-}
+.nav-button:hover { background-color: #3e451b; }
 .person-item {
     padding: 15px;
     background: rgba(255,255,255,0.1);
@@ -73,6 +69,11 @@ h1 {
     background: rgba(255,255,255,0.08);
     border-radius: 6px;
 }
+.section-title {
+    margin-top: 20px;
+    font-weight: bold;
+    text-decoration: underline;
+}
 button {
     padding: 10px 20px;
     border: none;
@@ -88,31 +89,26 @@ button {
 
 <div class="container">
 
-    <!-- LOGO -->
-    <img src="https://i.imgur.com/cotrnBV.png" class="logo" alt="Logo">
+<img src="https://i.imgur.com/cotrnBV.png" class="logo" alt="Logo">
 
-    <h1>Gestion PPL</h1>
+<h1>Gestion PPL</h1>
 
-    <!-- NAVIGATION -->
-    <div class="nav-header">
-        <a href="logsplanvol.html" class="nav-button">Logs Plans de Vol</a>
-        <a href="gestionppl.html" class="nav-button">Gestion PPL</a>
-        <a href="rapportincident.html" class="nav-button">Rapport Incident</a>
-    </div>
+<div class="nav-header">
+    <a href="logsplanvol.html" class="nav-button">Logs Plans de Vol</a>
+    <a href="gestionppl.html" class="nav-button">Gestion PPL</a>
+    <a href="rapportincident.html" class="nav-button">Rapport Incident</a>
+</div>
 
-    <!-- LISTE PPL -->
-    <ul id="personList"></ul>
+<ul id="personList"></ul>
 
-    <!-- DÉTAIL -->
-    <div id="detailPanel" class="detail-panel">
-        <h2 id="detailName"></h2>
-        <div id="detailInfo"></div>
+<div id="detailPanel" class="detail-panel">
+    <h2 id="detailName"></h2>
+    <div id="detailInfo"></div>
 
-        <h3>Plans de vol (en tant que pilote)</h3>
-        <div id="flightsList"></div>
+    <div id="flightsList"></div>
 
-        <button onclick="closeDetail()">Fermer</button>
-    </div>
+    <button onclick="closeDetail()">Fermer</button>
+</div>
 
 </div>
 
@@ -127,7 +123,7 @@ const supabaseClient = supabase.createClient(
     SUPABASE_ANON_KEY
 );
 
-/* ===================== CHARGEMENT PPL ===================== */
+/* ===================== LOAD PPL ===================== */
 
 async function loadPersons() {
     const { data, error } = await supabaseClient
@@ -143,16 +139,16 @@ async function loadPersons() {
         return;
     }
 
-    data.forEach(person => {
+    data.forEach(p => {
         const li = document.createElement('li');
         li.className = 'person-item';
-        li.textContent = `${person.prenom} ${person.nom}`;
-        li.onclick = () => showDetail(person);
+        li.textContent = `${p.prenom} ${p.nom}`;
+        li.onclick = () => showDetail(p);
         list.appendChild(li);
     });
 }
 
-/* ===================== DÉTAIL ===================== */
+/* ===================== DETAIL ===================== */
 
 function showDetail(person) {
     document.getElementById('detailName').textContent =
@@ -166,42 +162,62 @@ function showDetail(person) {
         <p>Instructeur : ${person.instructeur || '—'}</p>
     `;
 
-    loadFlightsForPilot(person.nom, person.prenom);
+    loadFlightsAndIncidents(person.nom, person.prenom);
     document.getElementById('detailPanel').style.display = 'block';
 }
 
-/* ===================== MATCH PILOTE ===================== */
+/* ===================== FLIGHTS + INCIDENTS ===================== */
 
-async function loadFlightsForPilot(nom, prenom) {
-    const flightsList = document.getElementById('flightsList');
-    flightsList.innerHTML = '<p>Chargement...</p>';
+async function loadFlightsAndIncidents(nom, prenom) {
+    const container = document.getElementById('flightsList');
+    container.innerHTML = '<p>Chargement...</p>';
 
     const prenomNom = `${prenom} ${nom}`.trim();
     const nomPrenom = `${nom} ${prenom}`.trim();
 
-    const { data, error } = await supabaseClient
+    const vols = await supabaseClient
         .from('logs-plandevol')
         .select('*')
         .or(`pilote.ilike.${prenomNom},pilote.ilike.${nomPrenom}`)
         .order('created_at', { ascending: false });
 
-    if (error || !data || data.length === 0) {
-        flightsList.innerHTML = '<p>Aucun plan de vol trouvé.</p>';
-        return;
+    const incidents = await supabaseClient
+        .from('rapportincident-ppl')
+        .select('*')
+        .or(`pilote.ilike.${prenomNom},pilote.ilike.${nomPrenom}`)
+        .order('created_at', { ascending: false });
+
+    container.innerHTML = '';
+
+    container.innerHTML += '<div class="section-title">Plans de vol</div>';
+
+    if (!vols.data || vols.data.length === 0) {
+        container.innerHTML += '<p>Aucun plan de vol</p>';
+    } else {
+        vols.data.forEach(v => {
+            container.innerHTML += `
+                <div class="flight">
+                    ${v.lieudepart || '?'} → ${v.lieuarrive || '?'}<br>
+                    <small>${v.modele || '—'} | ${v.typeavion || '—'}</small>
+                </div>
+            `;
+        });
     }
 
-    flightsList.innerHTML = '';
+    container.innerHTML += '<div class="section-title">⚠️ Incidents</div>';
 
-    data.forEach(vol => {
-        const div = document.createElement('div');
-        div.className = 'flight';
-        div.innerHTML = `
-            <strong>${vol.dateduvol || '—'}</strong><br>
-            ${vol.lieudepart || '?'} → ${vol.lieuarrive || '?'}<br>
-            <small>${vol.modele || '—'} | ${vol.typeavion || '—'}</small>
-        `;
-        flightsList.appendChild(div);
-    });
+    if (!incidents.data || incidents.data.length === 0) {
+        container.innerHTML += '<p>Aucun incident</p>';
+    } else {
+        incidents.data.forEach(i => {
+            container.innerHTML += `
+                <div class="flight">
+                    <strong>${i.lieucrash}</strong><br>
+                    ${i.modele} — Blessés : ${i.nombreblesser}
+                </div>
+            `;
+        });
+    }
 }
 
 /* ===================== UI ===================== */

@@ -180,9 +180,7 @@ document.getElementById("volForm").addEventListener("submit", async e => {
     const startTime = Date.now();
     const MIN_DURATION = 10000;
 
-    // =============================================
     // PARTIE DISCORD – INCHANGÉE
-    // =============================================
     const embed = {
         title: "🛩️ Plan de Vol – Enregistrement",
         color: 0x4B5320,
@@ -211,10 +209,8 @@ document.getElementById("volForm").addEventListener("submit", async e => {
         body: JSON.stringify({ embeds: [embed] })
     });
 
-    // =============================================
-    // PARTIE SUPABASE – CORRIGÉE
-    // =============================================
-    const supabaseClient = Supabase.createClient(
+    // PARTIE SUPABASE – CORRIGÉE ICI
+    const supabaseClient = supabase.createClient(
         'https://gktawbaposndfxijkxdk.supabase.co',
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk'
     );
@@ -235,19 +231,20 @@ document.getElementById("volForm").addEventListener("submit", async e => {
         notes: document.getElementById('notes').value || null
     };
 
-    // Insertion non bloquante
+    // Insertion (non bloquante)
     supabaseClient
         .from('logs-plandevol')
         .insert([formData])
         .then(({ error }) => {
             if (error) {
-                console.error('Erreur lors de l’enregistrement Supabase :', error);
+                console.error('Erreur Supabase :', error);
             }
+        })
+        .catch(err => {
+            console.error('Erreur inattendue Supabase :', err);
         });
 
-    // =============================================
-    // FIN DU TRAITEMENT
-    // =============================================
+    // Fin du traitement
     const elapsed = Date.now() - startTime;
     if (elapsed < MIN_DURATION) {
         await new Promise(r => setTimeout(r, MIN_DURATION - elapsed));

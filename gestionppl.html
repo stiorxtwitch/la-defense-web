@@ -1,289 +1,175 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Défense : Gestion PPL</title>
-    <link rel="icon" type="image/png" href="https://i.imgur.com/cotrnBV.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestion PPL</title>
 
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background-image: url('https://i.imgur.com/7yarc9G.jpeg');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-        }
-        .overlay {
-            position: fixed;
-            inset: 0;
-            background-color: rgba(75, 83, 32, 0.25);
-            z-index: -2;
-        }
-        .container {
-            background-color: rgba(30, 35, 25, 0.45);
-            backdrop-filter: blur(12px);
-            border-radius: 16px;
-            padding: 40px;
-            max-width: 1000px;
-            width: 90%;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            margin: 40px 0;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .logo {
-            display: block;
-            margin: 0 auto 25px;
-            max-width: 140px;
-        }
-        h1 {
-            text-align: center;
-            font-size: 2.3em;
-        }
-        .nav-header {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-bottom: 40px;
-            flex-wrap: wrap;
-        }
-        .nav-button {
-            background-color: #4B5320;
-            color: white;
-            padding: 14px 28px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .nav-button:hover { background-color: #3e451b; }
-        .create-btn {
-            background-color: #4B5320;
-            color: white;
-            border: none;
-            padding: 14px 28px;
-            font-size: 1.1em;
-            border-radius: 8px;
-            cursor: pointer;
-            margin: 20px auto;
-            display: block;
-        }
-        .person-list { list-style: none; padding: 0; }
-        .person-item {
-            background: rgba(255,255,255,0.08);
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        .person-item:hover { background: rgba(255,255,255,0.18); }
-        .detail-panel {
-            background: rgba(0,0,0,0.4);
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 30px;
-            display: none;
-        }
-        .detail-panel img {
-            max-width: 240px;
-            border-radius: 12px;
-            margin: 15px auto;
-            display: block;
-        }
-        .modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background: #2a2f24;
-            padding: 30px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 500px;
-        }
-        label { display: block; margin-top: 10px; }
-        input, select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 6px;
-            border: none;
-            background: rgba(255,255,255,0.15);
-            color: white;
-        }
-        .modal-buttons {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
-        }
-        .save-btn { background: #4B5320; color: white; }
-        .cancel-btn { background: #555; color: white; }
-        #loadingOverlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.75);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            z-index: 9999;
-        }
-    </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('https://i.imgur.com/7yarc9G.jpeg') center/cover fixed;
+    color: white;
+}
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 40px;
+    background: rgba(30,35,25,0.45);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+}
+.person-item {
+    padding: 15px;
+    background: rgba(255,255,255,0.1);
+    margin-bottom: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.person-item:hover { background: rgba(255,255,255,0.2); }
+.detail-panel {
+    margin-top: 30px;
+    padding: 20px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 12px;
+    display: none;
+}
+.flight {
+    padding: 10px;
+    margin-bottom: 10px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 6px;
+}
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    background: #4B5320;
+    color: white;
+    cursor: pointer;
+}
+</style>
 </head>
 
 <body>
-<div class="overlay"></div>
-
-<div id="loadingOverlay">
-    <img src="https://www.pngmart.com/files/23/Loading-PNG-Photos.gif" width="120">
-    <p>Chargement...</p>
-</div>
 
 <div class="container">
-    <img src="https://i.imgur.com/cotrnBV.png" class="logo">
     <h1>Gestion PPL</h1>
 
-    <div class="nav-header">
-        <a href="logsplanvol.html" class="nav-button">Logs Plans de Vol</a>
-        <a href="gestionppl.html" class="nav-button">Gestion PPL</a>
-        <a href="rapportincident.html" class="nav-button">Rapport Incident</a>
-    </div>
-
-    <button class="create-btn" id="btnCreateProfile">+ Créer un profil</button>
-
-    <ul class="person-list" id="personList"></ul>
+    <ul id="personList"></ul>
 
     <div id="detailPanel" class="detail-panel">
         <h2 id="detailName"></h2>
-        <img id="detailPhoto" style="display:none;">
         <div id="detailInfo"></div>
-        <h3>Plans de vol</h3>
+
+        <h3>Plans de vol (en tant que pilote)</h3>
         <div id="flightsList"></div>
+
         <button onclick="closeDetail()">Fermer</button>
     </div>
 </div>
 
-<div id="createModal" class="modal">
-    <div class="modal-content">
-        <h2>Créer un profil</h2>
-
-        <label>Nom</label><input id="inputNom">
-        <label>Prénom</label><input id="inputPrenom">
-        <label>Date passage</label><input type="date" id="inputDatePassage">
-
-        <label>Théorie Avion</label>
-        <select id="inputTheorieAvion"><option value="false">Non</option><option value="true">Oui</option></select>
-
-        <label>Permis Avion</label>
-        <select id="inputPermisAvion"><option value="false">Non</option><option value="true">Oui</option></select>
-
-        <label>Théorie Hélico</label>
-        <select id="inputTheorieHelico"><option value="false">Non</option><option value="true">Oui</option></select>
-
-        <label>Permis Hélico</label>
-        <select id="inputPermisHelico"><option value="false">Non</option><option value="true">Oui</option></select>
-
-        <label>Instructeur</label><input id="inputInstructeur">
-        <label>Photo (Imgur)</label><input id="inputLinkImage">
-
-        <div class="modal-buttons">
-            <button class="cancel-btn" onclick="closeModal()">Annuler</button>
-            <button class="save-btn" onclick="saveProfile()">Enregistrer</button>
-        </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
+/* ===================== SUPABASE ===================== */
+
 const SUPABASE_URL = 'https://gktawbaposndfxijkxdk.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk';
+const SUPABASE_ANON_KEY = 'TA_CLE_ANON_ICI';
 
 const supabaseClient = supabase.createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
 );
 
-const loading = document.getElementById('loadingOverlay');
+/* ===================== CHARGEMENT PPL ===================== */
 
 async function loadPersons() {
-    loading.style.display = 'flex';
     const { data, error } = await supabaseClient
         .from('ppl-gestion')
         .select('*')
         .order('nom');
 
-    loading.style.display = 'none';
-
     const list = document.getElementById('personList');
     list.innerHTML = '';
 
-    if (!data) return;
+    if (!data || error) {
+        list.innerHTML = '<p>Erreur chargement profils</p>';
+        return;
+    }
 
-    data.forEach(p => {
+    data.forEach(person => {
         const li = document.createElement('li');
         li.className = 'person-item';
-        li.textContent = `${p.prenom} ${p.nom}`;
-        li.onclick = () => showDetail(p);
+        li.textContent = `${person.prenom} ${person.nom}`;
+        li.onclick = () => showDetail(person);
         list.appendChild(li);
     });
 }
 
-function showDetail(p) {
-    document.getElementById('detailName').textContent = `${p.prenom} ${p.nom}`;
+/* ===================== DÉTAIL + MATCH PILOTE ===================== */
+
+function showDetail(person) {
+    document.getElementById('detailName').textContent =
+        `${person.prenom} ${person.nom}`;
+
     document.getElementById('detailInfo').innerHTML = `
-        <p>Avion théorie: ${p.theorieavion ? 'Oui' : 'Non'}</p>
-        <p>Avion permis: ${p.permisavion ? 'Oui' : 'Non'}</p>
-        <p>Hélico théorie: ${p.theoriehelico ? 'Oui' : 'Non'}</p>
-        <p>Hélico permis: ${p.permishelico ? 'Oui' : 'Non'}</p>
-        <p>Instructeur: ${p.instructeur || '—'}</p>
+        <p>Théorie Avion : ${person.theorieavion ? 'Oui' : 'Non'}</p>
+        <p>Permis Avion : ${person.permisavion ? 'Oui' : 'Non'}</p>
+        <p>Théorie Hélico : ${person.theoriehelico ? 'Oui' : 'Non'}</p>
+        <p>Permis Hélico : ${person.permishelico ? 'Oui' : 'Non'}</p>
+        <p>Instructeur : ${person.instructeur || '—'}</p>
     `;
+
+    loadFlightsForPilot(person.nom, person.prenom);
+
     document.getElementById('detailPanel').style.display = 'block';
 }
+
+/* ===================== CHARGEMENT PLANS DE VOL ===================== */
+
+async function loadFlightsForPilot(nom, prenom) {
+    const flightsList = document.getElementById('flightsList');
+    flightsList.innerHTML = '<p>Chargement...</p>';
+
+    const piloteFullName = `${nom} ${prenom}`.trim();
+
+    const { data, error } = await supabaseClient
+        .from('logs-plandevol')
+        .select('*')
+        .eq('pilote', piloteFullName)
+        .order('created_at', { ascending: false });
+
+    if (error || !data || data.length === 0) {
+        flightsList.innerHTML = '<p>Aucun plan de vol trouvé.</p>';
+        return;
+    }
+
+    flightsList.innerHTML = '';
+
+    data.forEach(vol => {
+        const div = document.createElement('div');
+        div.className = 'flight';
+        div.innerHTML = `
+            <strong>${vol.dateduvol || '—'}</strong><br>
+            ${vol.lieudepart || '?'} → ${vol.lieuarrive || '?'}<br>
+            <small>${vol.modele || '—'} | ${vol.typeavion || '—'}</small>
+        `;
+        flightsList.appendChild(div);
+    });
+}
+
+/* ===================== UI ===================== */
 
 function closeDetail() {
     document.getElementById('detailPanel').style.display = 'none';
 }
 
-function openModal() {
-    document.getElementById('createModal').style.display = 'flex';
-}
+/* ===================== INIT ===================== */
 
-function closeModal() {
-    document.getElementById('createModal').style.display = 'none';
-}
-
-async function saveProfile() {
-    const data = {
-        nom: inputNom.value,
-        prenom: inputPrenom.value,
-        datedepassage: inputDatePassage.value || null,
-        theorieavion: inputTheorieAvion.value === 'true',
-        permisavion: inputPermisAvion.value === 'true',
-        theoriehelico: inputTheorieHelico.value === 'true',
-        permishelico: inputPermisHelico.value === 'true',
-        instructeur: inputInstructeur.value || null,
-        linkimage: inputLinkImage.value || null
-    };
-
-    await supabaseClient.from('ppl-gestion').insert([data]);
-    closeModal();
-    loadPersons();
-}
-
-document.getElementById('btnCreateProfile').onclick = openModal;
 loadPersons();
 </script>
+
 </body>
 </html>

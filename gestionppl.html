@@ -94,7 +94,7 @@ async function loadPersons() {
     const list = document.getElementById('personList');
     list.innerHTML = '';
 
-    if (!data || error) {
+    if (error || !data) {
         list.innerHTML = '<p>Erreur chargement profils</p>';
         return;
     }
@@ -108,7 +108,7 @@ async function loadPersons() {
     });
 }
 
-/* ===================== DÉTAIL + MATCH PILOTE ===================== */
+/* ===================== DÉTAIL PPL ===================== */
 
 function showDetail(person) {
     document.getElementById('detailName').textContent =
@@ -127,18 +127,21 @@ function showDetail(person) {
     document.getElementById('detailPanel').style.display = 'block';
 }
 
-/* ===================== CHARGEMENT PLANS DE VOL ===================== */
+/* ===================== MATCH PILOTE (PRENOM NOM / NOM PRENOM) ===================== */
 
 async function loadFlightsForPilot(nom, prenom) {
     const flightsList = document.getElementById('flightsList');
     flightsList.innerHTML = '<p>Chargement...</p>';
 
-    const piloteFullName = `${nom} ${prenom}`.trim();
+    const prenomNom = `${prenom} ${nom}`.trim();
+    const nomPrenom = `${nom} ${prenom}`.trim();
 
     const { data, error } = await supabaseClient
         .from('logs-plandevol')
         .select('*')
-        .eq('pilote', piloteFullName)
+        .or(
+            `pilote.ilike.${prenomNom},pilote.ilike.${nomPrenom}`
+        )
         .order('created_at', { ascending: false });
 
     if (error || !data || data.length === 0) {

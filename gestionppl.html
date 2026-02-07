@@ -263,7 +263,7 @@
 
 <script>
     // ==============================================
-    // SUPABASE : UNE SEULE DÉCLARATION ICI
+    // SUPABASE – DÉCLARATION UNIQUE ICI
     // ==============================================
     const SUPABASE_URL = 'https://gktawbaposndfxijkxdk.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk';
@@ -271,6 +271,10 @@
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const loading = document.getElementById('loadingOverlay');
+
+    // ==============================================
+    // FONCTIONS
+    // ==============================================
 
     async function loadPersons() {
         loading.style.display = 'flex';
@@ -298,8 +302,8 @@
                 list.appendChild(li);
             });
         } catch (err) {
-            console.error('Erreur chargement:', err);
-            document.getElementById('personList').innerHTML = '<p style="color:#ff5555; text-align:center;">Erreur chargement profils</p>';
+            console.error('Erreur chargement profils:', err);
+            document.getElementById('personList').innerHTML = '<p style="color:#ff5555; text-align:center;">Erreur de chargement des profils</p>';
         } finally {
             loading.style.display = 'none';
         }
@@ -308,12 +312,12 @@
     function showDetail(person) {
         document.getElementById('detailName').textContent = `${person.prenom || ''} ${person.nom || ''}`;
 
-        const photo = document.getElementById('detailPhoto');
+        const photoEl = document.getElementById('detailPhoto');
         if (person.linkimage) {
-            photo.src = person.linkimage;
-            photo.style.display = 'block';
+            photoEl.src = person.linkimage;
+            photoEl.style.display = 'block';
         } else {
-            photo.style.display = 'none';
+            photoEl.style.display = 'none';
         }
 
         document.getElementById('detailInfo').innerHTML = `
@@ -332,38 +336,42 @@
     }
 
     async function loadFlights(nom, prenom) {
-        const container = document.getElementById('flightsList');
-        container.innerHTML = '<p>Chargement...</p>';
+        const list = document.getElementById('flightsList');
+        list.innerHTML = '<p>Chargement...</p>';
 
         try {
+            const fullName = `${nom} ${prenom}`.trim();
             const { data, error } = await supabase
                 .from('logs-plandevol')
                 .select('*')
-                .eq('pilote', `${nom} ${prenom}`)
+                .eq('pilote', fullName)
                 .order('created_at', { ascending: false })
                 .limit(20);
 
             if (error) throw error;
 
-            container.innerHTML = data?.length 
-                ? '' 
-                : '<p>Aucun plan de vol trouvé.</p>';
+            list.innerHTML = '';
 
-            data?.forEach(vol => {
+            if (!data || data.length === 0) {
+                list.innerHTML = '<p>Aucun plan de vol trouvé pour ce pilote.</p>';
+                return;
+            }
+
+            data.forEach(vol => {
                 const div = document.createElement('div');
-                div.style.margin = '10px 0';
+                div.style.marginBottom = '12px';
                 div.style.padding = '10px';
                 div.style.background = 'rgba(255,255,255,0.05)';
                 div.style.borderRadius = '6px';
                 div.innerHTML = `
-                    <strong>${vol.dateduvol || '?'}</strong> — ${vol.lieudepart || '?'} → ${vol.lieuarrive || '?'}
+                    <strong>${vol.dateduvol || '—'}</strong> — ${vol.lieudepart || '?'} → ${vol.lieuarrive || '?'}
                     <br><small>${vol.modele || '—'} | ${vol.typeavion || '—'}</small>
                 `;
-                container.appendChild(div);
+                list.appendChild(div);
             });
         } catch (err) {
             console.error(err);
-            container.innerHTML = '<p style="color:#ff5555;">Erreur chargement vols</p>';
+            list.innerHTML = '<p style="color:#ff5555;">Erreur lors du chargement des vols</p>';
         }
     }
 
@@ -373,12 +381,15 @@
 
     function openModal() {
         document.getElementById('createModal').style.display = 'flex';
-        ['inputNom','inputPrenom','inputDatePassage','inputInstructeur','inputLinkImage'].forEach(id => {
-            document.getElementById(id).value = '';
-        });
-        ['inputTheorieAvion','inputPermisAvion','inputTheorieHelico','inputPermisHelico'].forEach(id => {
-            document.getElementById(id).value = 'false';
-        });
+        document.getElementById('inputNom').value = '';
+        document.getElementById('inputPrenom').value = '';
+        document.getElementById('inputDatePassage').value = '';
+        document.getElementById('inputTheorieAvion').value = 'false';
+        document.getElementById('inputPermisAvion').value = 'false';
+        document.getElementById('inputTheorieHelico').value = 'false';
+        document.getElementById('inputPermisHelico').value = 'false';
+        document.getElementById('inputInstructeur').value = '';
+        document.getElementById('inputLinkImage').value = '';
     }
 
     function closeModal() {
@@ -388,12 +399,13 @@
     async function saveProfile() {
         const nom = document.getElementById('inputNom').value.trim();
         const prenom = document.getElementById('inputPrenom').value.trim();
+
         if (!nom || !prenom) {
-            alert('Nom et prénom obligatoires');
+            alert('Nom et Prénom sont obligatoires !');
             return;
         }
 
-        const payload = {
+        const data = {
             nom,
             prenom,
             datedepassage: document.getElementById('inputDatePassage').value || null,
@@ -406,19 +418,21 @@
         };
 
         try {
-            const { error } = await supabase.from('ppl-gestion').insert([payload]);
+            const { error } = await supabase.from('ppl-gestion').insert([data]);
             if (error) throw error;
 
-            alert('Profil créé !');
+            alert('Profil créé avec succès !');
             closeModal();
             loadPersons();
         } catch (err) {
             console.error(err);
-            alert('Erreur création : ' + (err.message || 'Inconnue'));
+            alert('Erreur lors de la création : ' + (err.message || 'Inconnue'));
         }
     }
 
-    // Lancement
+    // ==============================================
+    // LANCEMENT
+    // ==============================================
     loadPersons();
 </script>
 </body>

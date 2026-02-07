@@ -6,7 +6,6 @@
     <title>La Défense : Plan et Récapitulatif de Vol</title>
     <link rel="icon" type="image/png" href="https://i.imgur.com/cotrnBV.png">
     <style>
-        /* Ton CSS reste 100% identique – rien n'est touché ici */
         body {
             margin: 0;
             padding: 0;
@@ -167,15 +166,11 @@
     <div id="message"></div>
 </div>
 
-<!-- Bibliothèque Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 const WEBHOOK_URL = "https://discord.com/api/webhooks/1469078801890672833/fLPN-HKIyjKFrcaaRK-HhyOf8O-gDM8IO2HQWbb9QuFDGmCtw1h_9j8NCZP9SzIOL7ZV";
 
-// =============================================
-// PARTIE DISCORD → RESTE 100% IDENTIQUE
-// =============================================
 document.getElementById("volForm").addEventListener("submit", async e => {
     e.preventDefault();
     const loading = document.getElementById("loadingOverlay");
@@ -185,6 +180,9 @@ document.getElementById("volForm").addEventListener("submit", async e => {
     const startTime = Date.now();
     const MIN_DURATION = 10000;
 
+    // =============================================
+    // PARTIE DISCORD – INCHANGÉE
+    // =============================================
     const embed = {
         title: "🛩️ Plan de Vol – Enregistrement",
         color: 0x4B5320,
@@ -214,10 +212,8 @@ document.getElementById("volForm").addEventListener("submit", async e => {
     });
 
     // =============================================
-    // PARTIE SUPABASE → CORRIGÉE ICI SEULEMENT
+    // PARTIE SUPABASE – CORRIGÉE
     // =============================================
-
-    // On utilise un nom différent pour éviter le conflit
     const supabaseClient = Supabase.createClient(
         'https://gktawbaposndfxijkxdk.supabase.co',
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk'
@@ -239,20 +235,19 @@ document.getElementById("volForm").addEventListener("submit", async e => {
         notes: document.getElementById('notes').value || null
     };
 
-    // Insertion dans la table (sans await pour ne pas bloquer si erreur)
+    // Insertion non bloquante
     supabaseClient
         .from('logs-plandevol')
         .insert([formData])
         .then(({ error }) => {
             if (error) {
-                console.error("Erreur Supabase :", error);
+                console.error('Erreur lors de l’enregistrement Supabase :', error);
             }
         });
 
     // =============================================
-    // FIN – le reste reste identique
+    // FIN DU TRAITEMENT
     // =============================================
-
     const elapsed = Date.now() - startTime;
     if (elapsed < MIN_DURATION) {
         await new Promise(r => setTimeout(r, MIN_DURATION - elapsed));

@@ -64,11 +64,21 @@ h1 { text-align: center; }
 .person-item:hover { background: rgba(255,255,255,0.2); }
 
 .detail-panel {
+    position: relative;
     margin-top: 30px;
     padding: 20px;
     background: rgba(0,0,0,0.4);
     border-radius: 12px;
     display: none;
+}
+.detail-panel img {
+    max-width: 120px;
+    max-height: 120px;
+    border-radius: 12px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    border: 2px solid rgba(255,255,255,0.3);
 }
 
 .flight {
@@ -89,7 +99,6 @@ h1 { text-align: center; }
     margin: 4px 4px 4px 0;
     color: white;
 }
-
 .badge-success { background-color: #28a745; }
 .badge-warning { background-color: #ffc107; color: #000; }
 .badge-danger { background-color: #dc3545; }
@@ -139,6 +148,7 @@ h1 { text-align: center; }
 <ul id="personList"></ul>
 
 <div id="detailPanel" class="detail-panel">
+    <img id="detailPhoto" src="" style="display:none;">
     <h2 id="detailName"></h2>
     <div id="detailBadges"></div>
     <div id="detailInfo"></div>
@@ -156,6 +166,7 @@ h1 { text-align: center; }
 <input id="nom" placeholder="Nom">
 <input id="prenom" placeholder="Prénom">
 <input id="instructeur" placeholder="Instructeur">
+<input id="linkimage" placeholder="Lien image Imgur">
 
 <select id="theorieavion"><option value="false">Théorie Avion : Non</option><option value="true">Théorie Avion : Oui</option></select>
 <select id="permisavion"><option value="false">Permis Avion : Non</option><option value="true">Permis Avion : Oui</option></select>
@@ -189,14 +200,22 @@ async function loadPersons() {
 function showDetail(p) {
     document.getElementById('detailName').textContent = `${p.prenom} ${p.nom}`;
 
-    // ================== BADGES ==================
+    // ===== BADGES =====
     const badges = [];
     if(p.theorieavion) badges.push('<span class="badge badge-success">Théorie Avion</span>');
     if(p.permisavion) badges.push('<span class="badge badge-success">Permis Avion</span>');
     if(p.theoriehelico) badges.push('<span class="badge badge-warning">Théorie Hélico</span>');
     if(p.permishelico) badges.push('<span class="badge badge-warning">Permis Hélico</span>');
-
     document.getElementById('detailBadges').innerHTML = badges.join(' ');
+
+    // ===== IMAGE =====
+    const imgEl = document.getElementById('detailPhoto');
+    if(p.linkimage){
+        imgEl.src = p.linkimage;
+        imgEl.style.display = 'block';
+    } else {
+        imgEl.style.display = 'none';
+    }
 
     document.getElementById('detailInfo').innerHTML = `
         Instructeur : ${p.instructeur || '—'}
@@ -211,7 +230,6 @@ async function loadFlightsAndIncidents(nom, prenom) {
     const vols = await supabaseClient.from('logs-plandevol')
         .select('*')
         .or(`pilote.ilike.${prenomNom},pilote.ilike.${nomPrenom}`);
-
     const incidents = await supabaseClient.from('rapportincident-ppl')
         .select('*')
         .or(`pilote.ilike.${prenomNom},pilote.ilike.${nomPrenom}`);
@@ -219,7 +237,6 @@ async function loadFlightsAndIncidents(nom, prenom) {
     const c = document.getElementById('flightsList');
     c.innerHTML = '<div class="section-title">Plans de vol</div>';
     vols.data.forEach(v => c.innerHTML += `<div class="flight">${v.lieudepart} → ${v.lieuarrive}</div>`);
-
     c.innerHTML += '<div class="section-title">⚠️ Incidents</div>';
     incidents.data.forEach(i => c.innerHTML += `<div class="flight">${i.lieucrash}</div>`);
 }
@@ -233,6 +250,7 @@ async function savePPL() {
         nom: nom.value,
         prenom: prenom.value,
         instructeur: instructeur.value,
+        linkimage: linkimage.value,
         theorieavion: theorieavion.value==='true',
         permisavion: permisavion.value==='true'
     }]);

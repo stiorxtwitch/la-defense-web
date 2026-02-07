@@ -133,8 +133,8 @@
 </div>
 
 <script>
-    // URL avec proxy CORS (remplace seulement si tu veux un autre proxy)
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFWbt92hR5IDwIJ7IdUm_Ehq4XeVs6YHAfyPN0yZdTuu3h7MPPslMTZDYBAg6c1yJpbw/exec";
+    // URL avec proxy CORS intégré
+    const SCRIPT_URL = "https://corsproxy.io/?https://script.google.com/macros/s/AKfycbxFWbt92hR5IDwIJ7IdUm_Ehq4XeVs6YHAfyPN0yZdTuu3h7MPPslMTZDYBAg6c1yJpbw/exec";
 
     document.getElementById("loginForm").addEventListener("submit", async function(e) {
         e.preventDefault();
@@ -170,14 +170,14 @@
             const result = await response.json();
 
             if (result.success === true) {
-                console.log("Connexion réussie !");
+                console.log("Connexion réussie ! Redirection...");
                 window.location.href = "logsplanvol.html";
             } else {
                 errorDiv.textContent = "Identifiants incorrects.";
             }
         } catch (err) {
             console.error("Erreur fetch:", err);
-            errorDiv.textContent = "Erreur de connexion au serveur. Vérifie l'URL ou le proxy.";
+            errorDiv.textContent = "Erreur de connexion au serveur. Vérifie l'URL ou essaie à nouveau.";
         } finally {
             loading.style.display = "none";
         }

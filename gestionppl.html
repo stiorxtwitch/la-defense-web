@@ -23,11 +23,7 @@ body {
     backdrop-filter: blur(12px);
     border-radius: 16px;
 }
-.logo {
-    display: block;
-    margin: 0 auto 25px;
-    max-width: 140px;
-}
+.logo { display: block; margin: 0 auto 25px; max-width: 140px; }
 h1 { text-align: center; }
 .nav-header {
     display: flex;
@@ -82,11 +78,21 @@ h1 { text-align: center; }
     border-radius: 6px;
 }
 
-.section-title {
-    margin-top: 20px;
-    font-weight: bold;
-    text-decoration: underline;
+.section-title { margin-top: 20px; font-weight: bold; text-decoration: underline; }
+
+/* BADGES */
+.badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    margin: 4px 4px 4px 0;
+    color: white;
 }
+
+.badge-success { background-color: #28a745; }
+.badge-warning { background-color: #ffc107; color: #000; }
+.badge-danger { background-color: #dc3545; }
 
 /* MODAL */
 .modal {
@@ -111,15 +117,11 @@ h1 { text-align: center; }
     border-radius: 6px;
     border: none;
 }
-.modal-buttons {
-    display: flex;
-    gap: 15px;
-}
+.modal-buttons { display: flex; gap: 15px; }
 </style>
 </head>
 
 <body>
-
 <div class="container">
 
 <img src="https://i.imgur.com/cotrnBV.png" class="logo">
@@ -138,6 +140,7 @@ h1 { text-align: center; }
 
 <div id="detailPanel" class="detail-panel">
     <h2 id="detailName"></h2>
+    <div id="detailBadges"></div>
     <div id="detailInfo"></div>
     <div id="flightsList"></div>
     <button onclick="closeDetail()">Fermer</button>
@@ -185,6 +188,16 @@ async function loadPersons() {
 
 function showDetail(p) {
     document.getElementById('detailName').textContent = `${p.prenom} ${p.nom}`;
+
+    // ================== BADGES ==================
+    const badges = [];
+    if(p.theorieavion) badges.push('<span class="badge badge-success">Théorie Avion</span>');
+    if(p.permisavion) badges.push('<span class="badge badge-success">Permis Avion</span>');
+    if(p.theoriehelico) badges.push('<span class="badge badge-warning">Théorie Hélico</span>');
+    if(p.permishelico) badges.push('<span class="badge badge-warning">Permis Hélico</span>');
+
+    document.getElementById('detailBadges').innerHTML = badges.join(' ');
+
     document.getElementById('detailInfo').innerHTML = `
         Instructeur : ${p.instructeur || '—'}
     `;
@@ -205,30 +218,23 @@ async function loadFlightsAndIncidents(nom, prenom) {
 
     const c = document.getElementById('flightsList');
     c.innerHTML = '<div class="section-title">Plans de vol</div>';
-
     vols.data.forEach(v => c.innerHTML += `<div class="flight">${v.lieudepart} → ${v.lieuarrive}</div>`);
+
     c.innerHTML += '<div class="section-title">⚠️ Incidents</div>';
     incidents.data.forEach(i => c.innerHTML += `<div class="flight">${i.lieucrash}</div>`);
 }
 
-function closeDetail() {
-    document.getElementById('detailPanel').style.display = 'none';
-}
-
-function openModal() {
-    document.getElementById('createModal').style.display = 'flex';
-}
-function closeModal() {
-    document.getElementById('createModal').style.display = 'none';
-}
+function closeDetail() { document.getElementById('detailPanel').style.display='none'; }
+function openModal() { document.getElementById('createModal').style.display='flex'; }
+function closeModal() { document.getElementById('createModal').style.display='none'; }
 
 async function savePPL() {
     await supabaseClient.from('ppl-gestion').insert([{
         nom: nom.value,
         prenom: prenom.value,
         instructeur: instructeur.value,
-        theorieavion: theorieavion.value === 'true',
-        permisavion: permisavion.value === 'true'
+        theorieavion: theorieavion.value==='true',
+        permisavion: permisavion.value==='true'
     }]);
     closeModal();
     loadPersons();
@@ -236,6 +242,5 @@ async function savePPL() {
 
 loadPersons();
 </script>
-
 </body>
 </html>

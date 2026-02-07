@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Défense : Plan et Récapitulatif de Vol</title>
     <link rel="icon" type="image/png" href="https://i.imgur.com/cotrnBV.png">
-
     <style>
         body {
             margin: 0;
@@ -21,14 +20,12 @@
             justify-content: center;
             align-items: center;
         }
-
         .overlay {
             position: fixed;
             inset: 0;
             background-color: rgba(75, 83, 32, 0.25);
             z-index: -2;
         }
-
         .container {
             background-color: rgba(30, 35, 25, 0.45);
             backdrop-filter: blur(12px);
@@ -40,25 +37,21 @@
             border: 1px solid rgba(255, 255, 255, 0.12);
             z-index: 1;
         }
-
         .logo {
             display: block;
             margin: 0 auto 25px;
             max-width: 140px;
         }
-
         h1 {
             text-align: center;
             font-size: 2.3em;
             margin-bottom: 35px;
         }
-
         label {
             font-weight: bold;
             margin-bottom: 8px;
             display: block;
         }
-
         input, select, textarea {
             width: 100%;
             padding: 14px;
@@ -69,12 +62,10 @@
             background-color: rgba(255,255,255,0.12);
             color: #fff;
         }
-
         input:focus, select:focus, textarea:focus {
             outline: none;
             background-color: rgba(255,255,255,0.22);
         }
-
         select {
             appearance: none;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
@@ -83,17 +74,14 @@
             background-size: 16px;
             padding-right: 40px;
         }
-
         select option {
             background-color: #2a2f24;
             color: #fff;
         }
-
         select option:hover,
         select option:checked {
             background-color: #4B5320 !important;
         }
-
         button {
             background-color: #4B5320;
             color: #fff;
@@ -104,17 +92,14 @@
             font-weight: bold;
             cursor: pointer;
         }
-
         button:hover {
             background-color: #3e451b;
         }
-
         #message {
             margin-top: 25px;
             text-align: center;
             font-size: 1.1em;
         }
-
         #loadingOverlay {
             position: fixed;
             inset: 0;
@@ -125,62 +110,45 @@
             flex-direction: column;
             z-index: 9999;
         }
-
         #loadingOverlay img {
             width: 120px;
         }
-
         #loadingOverlay p {
             font-size: 1.8em;
             margin-top: 20px;
         }
     </style>
 </head>
-
 <body>
-
 <div class="overlay"></div>
-
 <div id="loadingOverlay">
     <img src="https://www.pngmart.com/files/23/Loading-PNG-Photos.gif">
     <p>Envoi en cours</p>
 </div>
-
 <div class="container">
     <img src="https://i.imgur.com/cotrnBV.png" class="logo">
     <h1>La Défense : Plan et Récapitulatif de Vol</h1>
-
     <form id="volForm">
         <label>Pilote (Nom + Prénom) :</label>
         <input id="pilote" required>
-
         <label>Co-Pilote (Nom + Prénom) :</label>
         <input id="copilote">
-
         <label>Transpondeur de l’aéronef :</label>
         <input id="transpondeur" required>
-
         <label>Modèle de l’aéronef :</label>
         <input id="modeleAvion" required>
-
         <label>Nombre de personnes à bord :</label>
         <input type="number" id="nbPersonnes" min="1" required>
-
         <label>Date du Vol :</label>
         <input type="date" id="date" required>
-
         <label>Heure de Départ :</label>
         <input type="time" id="heureDepart" required>
-
         <label>Heure d'Arrivée :</label>
         <input type="time" id="heureArrivee" required>
-
         <label>Lieu de Départ :</label>
         <input id="depart" required>
-
         <label>Lieu d'Arrivée :</label>
         <input id="arrivee" required>
-
         <label>Type d'Avion :</label>
         <select id="typeAvion" required>
             <option value="">Sélectionnez...</option>
@@ -189,25 +157,28 @@
             <option>Transport / Commercial</option>
             <option>Autre</option>
         </select>
-
         <label>Passagers (un par ligne) :</label>
         <textarea id="passagers" rows="4"></textarea>
-
         <label>Notes Supplémentaires :</label>
         <textarea id="notes" rows="3"></textarea>
-
         <button type="submit">Enregistrer le Plan de Vol</button>
     </form>
-
     <div id="message"></div>
 </div>
+
+<!-- Ajout de la bibliothèque Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 const WEBHOOK_URL = "https://discord.com/api/webhooks/1469078801890672833/fLPN-HKIyjKFrcaaRK-HhyOf8O-gDM8IO2HQWbb9QuFDGmCtw1h_9j8NCZP9SzIOL7ZV";
 
+// Configuration Supabase
+const SUPABASE_URL = 'https://gktawbaposndfxijkxdk.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk';
+const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 document.getElementById("volForm").addEventListener("submit", async e => {
     e.preventDefault();
-
     const loading = document.getElementById("loadingOverlay");
     const message = document.getElementById("message");
     loading.style.display = "flex";
@@ -216,34 +187,64 @@ document.getElementById("volForm").addEventListener("submit", async e => {
     const startTime = Date.now();
     const MIN_DURATION = 10000;
 
+    // Récupération des valeurs du formulaire
+    const formData = {
+        pilote: document.getElementById('pilote').value,
+        copilote: document.getElementById('copilote').value || null,
+        transpondeur: document.getElementById('transpondeur').value,
+        modele: document.getElementById('modeleAvion').value,
+        nbrpersonne: parseInt(document.getElementById('nbPersonnes').value),
+        dateduvol: document.getElementById('date').value,
+        heuredepart: document.getElementById('heureDepart').value,
+        heurearrive: document.getElementById('heureArrivee').value,
+        lieudepart: document.getElementById('depart').value,
+        lieuarrive: document.getElementById('arrivee').value,
+        typeavion: document.getElementById('typeAvion').value,
+        passagers: document.getElementById('passagers').value || null,
+        notes: document.getElementById('notes').value || null
+    };
+
+    // Envoi vers Discord (inchangé)
     const embed = {
         title: "🛩️ Plan de Vol – Enregistrement",
         color: 0x4B5320,
         fields: [
-            { name: "👤 Pilote", value: pilote.value, inline: true },
-            { name: "👤 Co-Pilote", value: copilote.value || "Aucun", inline: true },
-            { name: "📡 Transpondeur", value: transpondeur.value, inline: true },
-            { name: "✈️ Modèle", value: modeleAvion.value, inline: true },
-            { name: "👥 Personnes à bord", value: nbPersonnes.value, inline: true },
-            { name: "📅 Date", value: date.value, inline: true },
-            { name: "⏱️ Départ", value: heureDepart.value, inline: true },
-            { name: "⏱️ Arrivée", value: heureArrivee.value, inline: true },
-            { name: "📍 Départ", value: depart.value, inline: true },
-            { name: "📍 Arrivée", value: arrivee.value, inline: true },
-            { name: "🛩️ Type", value: typeAvion.value, inline: true },
-            { name: "🧍 Passagers", value: passagers.value || "Aucun" },
-            { name: "📝 Notes", value: notes.value || "Aucune" }
+            { name: "👤 Pilote", value: formData.pilote, inline: true },
+            { name: "👤 Co-Pilote", value: formData.copilote || "Aucun", inline: true },
+            { name: "📡 Transpondeur", value: formData.transpondeur, inline: true },
+            { name: "✈️ Modèle", value: formData.modele, inline: true },
+            { name: "👥 Personnes à bord", value: formData.nbrpersonne, inline: true },
+            { name: "📅 Date", value: formData.dateduvol, inline: true },
+            { name: "⏱️ Départ", value: formData.heuredepart, inline: true },
+            { name: "⏱️ Arrivée", value: formData.heurearrive, inline: true },
+            { name: "📍 Départ", value: formData.lieudepart, inline: true },
+            { name: "📍 Arrivée", value: formData.lieuarrive, inline: true },
+            { name: "🛩️ Type", value: formData.typeavion, inline: true },
+            { name: "🧍 Passagers", value: formData.passagers || "Aucun" },
+            { name: "📝 Notes", value: formData.notes || "Aucune" }
         ],
         footer: { text: "La Défense — Plan de Vol" },
         timestamp: new Date()
     };
 
+    // Envoi Discord
     await fetch(WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ embeds: [embed] })
     });
 
+    // Enregistrement dans Supabase (nouveau)
+    const { error } = await supabase
+        .from('logs-plandevol')
+        .insert([formData]);
+
+    if (error) {
+        console.error("Erreur Supabase :", error);
+        // On continue quand même (le message reste le même pour ne pas casser l'UX)
+    }
+
+    // Attente minimum pour le loading (inchangé)
     const elapsed = Date.now() - startTime;
     if (elapsed < MIN_DURATION) {
         await new Promise(r => setTimeout(r, MIN_DURATION - elapsed));
@@ -254,6 +255,5 @@ document.getElementById("volForm").addEventListener("submit", async e => {
     e.target.reset();
 });
 </script>
-
 </body>
 </html>

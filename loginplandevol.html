@@ -160,7 +160,7 @@
         loading.style.display = "flex";
 
         try {
-            // Correction ici : supabase (minuscule)
+            // Ligne corrigée : supabase (minuscule) au lieu de Supabase
             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
             const { data, error } = await supabaseClient
@@ -171,51 +171,50 @@
 
             if (error) {
                 console.error('Erreur lors de la récupération des logs:', error);
-                document.getElementById('logsList').innerHTML = 
-                    '<p style="color: #ff5555; text-align: center;">Erreur lors du chargement des logs...</p>';
+                document.getElementById('logsList').innerHTML = '<p style="color: #ff5555; text-align: center;">Erreur lors du chargement des logs...</p>';
                 return;
             }
 
             const logsList = document.getElementById('logsList');
             logsList.innerHTML = '';
 
-            if (data && data.length > 0) {
-                data.forEach(log => {
-                    const entry = document.createElement('div');
-                    entry.classList.add('log-entry');
-
-                    entry.innerHTML = `
-                        <div class="log-field"><strong>Pilote :</strong> ${log.pilote || '—'}</div>
-                        <div class="log-field"><strong>Co-Pilote :</strong> ${log.copilote || 'Aucun'}</div>
-                        <div class="log-field"><strong>Transpondeur :</strong> ${log.transpondeur || '—'}</div>
-                        <div class="log-field"><strong>Modèle avion :</strong> ${log.modele || '—'}</div>
-                        <div class="log-field"><strong>Nombre de personnes :</strong> ${log.nbrpersonne || '—'}</div>
-                        <div class="log-field"><strong>Date du vol :</strong> ${log.dateduvol || '—'}</div>
-                        <div class="log-field"><strong>Heure départ :</strong> ${log.heuredepart || '—'}</div>
-                        <div class="log-field"><strong>Heure arrivée :</strong> ${log.heurearrive || '—'}</div>
-                        <div class="log-field"><strong>Lieu départ :</strong> ${log.lieudepart || '—'}</div>
-                        <div class="log-field"><strong>Lieu arrivée :</strong> ${log.lieuarrive || '—'}</div>
-                        <div class="log-field"><strong>Type avion :</strong> ${log.typeavion || '—'}</div>
-                        <div class="log-field"><strong>Passagers :</strong> <pre style="margin:0; white-space:pre-wrap;">${log.passagers || 'Aucun'}</pre></div>
-                        <div class="log-field"><strong>Notes :</strong> <pre style="margin:0; white-space:pre-wrap;">${log.notes || 'Aucune'}</pre></div>
-                        <div class="log-timestamp">Enregistré le : ${new Date(log.created_at).toLocaleString('fr-FR')}</div>
-                    `;
-
-                    logsList.appendChild(entry);
-                });
-            } else {
+            if (data.length === 0) {
                 logsList.innerHTML = '<p style="text-align: center; color: #aaa;">Aucun plan de vol enregistré pour le moment.</p>';
+                return;
             }
+
+            data.forEach(log => {
+                const entry = document.createElement('div');
+                entry.classList.add('log-entry');
+
+                entry.innerHTML = `
+                    <div class="log-field"><strong>Pilote :</strong> ${log.pilote || '—'}</div>
+                    <div class="log-field"><strong>Co-Pilote :</strong> ${log.copilote || 'Aucun'}</div>
+                    <div class="log-field"><strong>Transpondeur :</strong> ${log.transpondeur || '—'}</div>
+                    <div class="log-field"><strong>Modèle avion :</strong> ${log.modele || '—'}</div>
+                    <div class="log-field"><strong>Nombre de personnes :</strong> ${log.nbrpersonne || '—'}</div>
+                    <div class="log-field"><strong>Date du vol :</strong> ${log.dateduvol || '—'}</div>
+                    <div class="log-field"><strong>Heure départ :</strong> ${log.heuredepart || '—'}</div>
+                    <div class="log-field"><strong>Heure arrivée :</strong> ${log.heurearrive || '—'}</div>
+                    <div class="log-field"><strong>Lieu départ :</strong> ${log.lieudepart || '—'}</div>
+                    <div class="log-field"><strong>Lieu arrivée :</strong> ${log.lieuarrive || '—'}</div>
+                    <div class="log-field"><strong>Type avion :</strong> ${log.typeavion || '—'}</div>
+                    <div class="log-field"><strong>Passagers :</strong> <pre style="margin:0; white-space:pre-wrap;">${log.passagers || 'Aucun'}</pre></div>
+                    <div class="log-field"><strong>Notes :</strong> <pre style="margin:0; white-space:pre-wrap;">${log.notes || 'Aucune'}</pre></div>
+                    <div class="log-timestamp">Enregistré le : ${new Date(log.created_at).toLocaleString('fr-FR')}</div>
+                `;
+
+                logsList.appendChild(entry);
+            });
         } catch (err) {
-            console.error('Erreur lors du chargement:', err);
-            document.getElementById('logsList').innerHTML = 
-                '<p style="color: #ff5555; text-align: center;">Erreur de connexion ou de configuration Supabase</p>';
+            console.error(err);
+            document.getElementById('logsList').innerHTML = '<p style="color: #ff5555; text-align: center;">Erreur de connexion au service...</p>';
         } finally {
             loading.style.display = "none";
         }
     }
 
-    // Chargement automatique au démarrage
+    // Charger les logs au démarrage
     fetchLogs();
 </script>
 </body>

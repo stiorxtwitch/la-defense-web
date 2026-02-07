@@ -56,44 +56,60 @@ button:hover { background:#3e451b; }
     <div id="error"></div>
 </div>
 
+<!-- Inclure Supabase JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYVXH5SN4uyNNhUKrMBPW1nfnaPokT5FO1SKkib7r9Gr6Nq8ood47zWxPmx3YFATrGKw/exec";
+    // ==============================================
+    // CONFIGURATION SUPABASE
+    // ==============================================
+    const SUPABASE_URL = 'https://gktawbaposndfxijkxdk.supabase.co'; // ton URL Supabase
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk';
 
-document.getElementById("loginForm").addEventListener("submit", async function(e){
-    e.preventDefault();
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value;
+    const loginForm = document.getElementById("loginForm");
     const errorDiv = document.getElementById("error");
     const loading = document.getElementById("loadingOverlay");
 
-    errorDiv.textContent = "";
-    loading.style.display = "flex";
+    loginForm.addEventListener("submit", async function(e){
+        e.preventDefault();
 
-    try {
-        const response = await fetch(SCRIPT_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username: username, password: password })
-        });
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value;
 
-        if(!response.ok) throw new Error("HTTP " + response.status);
-
-        const result = await response.json();
-        loading.style.display = "none";
-
-        if(result.success){
-            window.location.href = "logsplanvol.html";
-        } else {
-            errorDiv.textContent = "Identifiants incorrects.";
+        if(!username || !password){
+            errorDiv.textContent = "Veuillez remplir tous les champs.";
+            return;
         }
 
-    } catch(err){
-        loading.style.display = "none";
-        errorDiv.textContent = "Erreur serveur : " + (err.message || err);
-        console.error("Erreur fetch:", err);
-    }
-});
+        loading.style.display = "flex";
+        errorDiv.textContent = "";
+
+        try{
+            // Vérification dans Supabase
+            const { data, error } = await supabase
+                .from("login-pplgestion") // table Supabase
+                .select("*")
+                .eq("username", username)
+                .eq("password", password)
+                .limit(1);
+
+            if(error) throw error;
+
+            if(data && data.length > 0){
+                // Login réussi
+                window.location.href = "logsplanvol.html";
+            } else {
+                errorDiv.textContent = "Identifiants incorrects.";
+            }
+        } catch(err){
+            console.error(err);
+            errorDiv.textContent = "Erreur serveur : " + (err.message || err);
+        } finally {
+            loading.style.display = "none";
+        }
+    });
 </script>
 
 </body>

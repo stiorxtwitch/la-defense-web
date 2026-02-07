@@ -1,1 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Défense : Logs des Plans de Vol</title>
+    <link rel="icon" type="image/png" href="https://i.imgur.com/cotrnBV.png">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('https://i.imgur.com/7yarc9G.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(75, 83, 32, 0.25);
+            z-index: -2;
+        }
+        .container {
+            background-color: rgba(30, 35, 25, 0.45);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 800px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            z-index: 1;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+        .logo {
+            display: block;
+            margin: 0 auto 25px;
+            max-width: 140px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.3em;
+            margin-bottom: 35px;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: block;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 22px;
+            border-radius: 8px;
+            border: none;
+            font-size: 1.05em;
+            background-color: rgba(255,255,255,0.12);
+            color: #fff;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            background-color: rgba(255,255,255,0.22);
+        }
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+        select option {
+            background-color: #2a2f24;
+            color: #fff;
+        }
+        select option:hover,
+        select option:checked {
+            background-color: #4B5320 !important;
+        }
+        button {
+            background-color: #4B5320;
+            color: #fff;
+            padding: 16px;
+            font-size: 1.25em;
+            border-radius: 8px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #3e451b;
+        }
+        #message {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+        #loadingOverlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0,0,0,0.75);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+        }
+        #loadingOverlay img {
+            width: 120px;
+        }
+        #loadingOverlay p {
+            font-size: 1.8em;
+            margin-top: 20px;
+        }
+        .nav-header {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 40px;
+        }
+        .nav-button {
+            background-color: #4B5320;
+            color: #fff;
+            padding: 12px 20px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .nav-button:hover {
+            background-color: #3e451b;
+        }
+        #logsSection {
+            margin-top: 50px;
+        }
+        .log-entry {
+            background-color: rgba(255,255,255,0.08);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .log-field {
+            margin-bottom: 10px;
+        }
+        .log-field strong {
+            color: #ddd;
+        }
+    </style>
+</head>
+<body>
+<div class="overlay"></div>
+<div id="loadingOverlay">
+    <img src="https://www.pngmart.com/files/23/Loading-PNG-Photos.gif">
+    <p>Envoi en cours</p>
+</div>
+<div class="container">
+    <img src="https://i.imgur.com/cotrnBV.png" class="logo">
+    <h1>La Défense : Logs des Plans de Vol</h1>
+    <div class="nav-header">
+        <a href="gestionppl.html" class="nav-button">Gestion PPL</a>
+        <a href="rapportincident.html" class="nav-button">Rapport Incident</a>
+    </div>
+    <form id="volForm">
+        <label>Pilote (Nom + Prénom) :</label>
+        <input id="pilote" required>
+        <label>Co-Pilote (Nom + Prénom) :</label>
+        <input id="copilote">
+        <label>Transpondeur de l’aéronef :</label>
+        <input id="transpondeur" required>
+        <label>Modèle de l’aéronef :</label>
+        <input id="modeleAvion" required>
+        <label>Nombre de personnes à bord :</label>
+        <input type="number" id="nbPersonnes" min="1" required>
+        <label>Date du Vol :</label>
+        <input type="date" id="date" required>
+        <label>Heure de Départ :</label>
+        <input type="time" id="heureDepart" required>
+        <label>Heure d'Arrivée :</label>
+        <input type="time" id="heureArrivee" required>
+        <label>Lieu de Départ :</label>
+        <input id="depart" required>
+        <label>Lieu d'Arrivée :</label>
+        <input id="arrivee" required>
+        <label>Type d'Avion :</label>
+        <select id="typeAvion" required>
+            <option value="">Sélectionnez...</option>
+            <option>Hélicoptère</option>
+            <option>Avion de Chasse</option>
+            <option>Transport / Commercial</option>
+            <option>Autre</option>
+        </select>
+        <label>Passagers (un par ligne) :</label>
+        <textarea id="passagers" rows="4"></textarea>
+        <label>Notes Supplémentaires :</label>
+        <textarea id="notes" rows="3"></textarea>
+        <button type="submit">Enregistrer le Plan de Vol</button>
+    </form>
+    <div id="message"></div>
+    <div id="logsSection">
+        <h2>Les 100 Derniers Plans de Vol</h2>
+        <div id="logsList"></div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
+const SUPABASE_URL = 'https://gktawbaposndfxijkxdk.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk';
+const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+async function fetchLogs() {
+    const { data, error } = await supabase
+        .from('logs-plandevol')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100);
+
+    if (error) {
+        console.error('Erreur lors de la récupération des logs:', error);
+        return;
+    }
+
+    const logsList = document.getElementById('logsList');
+    logsList.innerHTML = '';
+    data.forEach(log => {
+        const entry = document.createElement('div');
+        entry.classList.add('log-entry');
+        entry.innerHTML = `
+            <div class="log-field"><strong>ID:</strong> ${log.id}</div>
+            <div class="log-field"><strong>Pilote:</strong> ${log.pilote || 'N/A'}</div>
+            <div class="log-field"><strong>Co-Pilote:</strong> ${log.copilote || 'Aucun'}</div>
+            <div class="log-field"><strong>Transpondeur:</strong> ${log.transpondeur || 'N/A'}</div>
+            <div class="log-field"><strong>Modèle:</strong> ${log.modele || 'N/A'}</div>
+            <div class="log-field"><strong>Nombre de Personnes:</strong> ${log.nbrpersonne || 'N/A'}</div>
+            <div class="log-field"><strong>Date du Vol:</strong> ${log.dateduvol || 'N/A'}</div>
+            <div class="log-field"><strong>Heure de Départ:</strong> ${log.heuredepart || 'N/A'}</div>
+            <div class="log-field"><strong>Heure d'Arrivée:</strong> ${log.heurearrive || 'N/A'}</div>
+            <div class="log-field"><strong>Lieu de Départ:</strong> ${log.lieudepart || 'N/A'}</div>
+            <div class="log-field"><strong>Lieu d'Arrivée:</strong> ${log.lieuarrive || 'N/A'}</div>
+            <div class="log-field"><strong>Type d'Avion:</strong> ${log.typeavion || 'N/A'}</div>
+            <div class="log-field"><strong>Passagers:</strong> ${log.passagers || 'Aucun'}</div>
+            <div class="log-field"><strong>Notes:</strong> ${log.notes || 'Aucune'}</div>
+            <div class="log-field"><strong>Créé le:</strong> ${new Date(log.created_at).toLocaleString()}</div>
+        `;
+        logsList.appendChild(entry);
+    });
+}
+
+document.getElementById("volForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const loading = document.getElementById("loadingOverlay");
+    const message = document.getElementById("message");
+    loading.style.display = "flex";
+    message.textContent = "";
+    const startTime = Date.now();
+    const MIN_DURATION = 10000;
+
+    const data = {
+        pilote: document.getElementById('pilote').value,
+        copilote: document.getElementById('copilote').value || null,
+        transpondeur: document.getElementById('transpondeur').value,
+        modele: document.getElementById('modeleAvion').value,
+        nbrpersonne: parseInt(document.getElementById('nbPersonnes').value),
+        dateduvol: document.getElementById('date').value,
+        heuredepart: document.getElementById('heureDepart').value,
+        heurearrive: document.getElementById('heureArrivee').value,
+        lieudepart: document.getElementById('depart').value,
+        lieuarrive: document.getElementById('arrivee').value,
+        typeavion: document.getElementById('typeAvion').value,
+        passagers: document.getElementById('passagers').value || null,
+        notes: document.getElementById('notes').value || null
+    };
+
+    const { error } = await supabase
+        .from('logs-plandevol')
+        .insert([data]);
+
+    if (error) {
+        console.error('Erreur lors de l\'envoi:', error);
+        message.textContent = "Erreur lors de l'envoi ❌";
+    } else {
+        message.textContent = "Plan de vol enregistré ✅";
+        e.target.reset();
+        fetchLogs(); // Rafraîchir les logs après insertion
+    }
+
+    const elapsed = Date.now() - startTime;
+    if (elapsed < MIN_DURATION) {
+        await new Promise(r => setTimeout(r, MIN_DURATION - elapsed));
+    }
+    loading.style.display = "none";
+});
+
+// Charger les logs au démarrage
+fetchLogs();
+</script>
+</body>
+</html>

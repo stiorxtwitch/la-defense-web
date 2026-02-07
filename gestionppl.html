@@ -262,12 +262,22 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+    // === CONFIGURATION SUPABASE (déclarée UNE SEULE FOIS) ===
     const SUPABASE_URL = 'https://gktawbaposndfxijkxdk.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk';
+
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const loading = document.getElementById('loadingOverlay');
 
+    // Vérification rapide que Supabase est chargé
+    if (typeof supabase === 'undefined' || !supabase.from) {
+        console.error("Supabase n'est pas chargé correctement");
+        loading.innerHTML = '<p style="color:#ff5555;">Erreur : Impossible de se connecter à la base de données</p>';
+        loading.style.display = 'flex';
+    }
+
+    // === CHARGEMENT DE LA LISTE DES PERSONNES ===
     async function loadPersons() {
         loading.style.display = 'flex';
         try {
@@ -289,20 +299,21 @@
             data.forEach(person => {
                 const li = document.createElement('li');
                 li.className = 'person-item';
-                li.textContent = `${person.prenom} ${person.nom}`;
+                li.textContent = `${person.prenom || ''} ${person.nom || ''}`;
                 li.onclick = () => showDetail(person);
                 list.appendChild(li);
             });
         } catch (err) {
-            console.error(err);
-            document.getElementById('personList').innerHTML = '<p style="color:#ff5555; text-align:center;">Erreur de chargement</p>';
+            console.error('Erreur chargement profils:', err);
+            document.getElementById('personList').innerHTML = '<p style="color:#ff5555; text-align:center;">Erreur de chargement des profils</p>';
         } finally {
             loading.style.display = 'none';
         }
     }
 
+    // === AFFICHAGE DÉTAILS ===
     function showDetail(person) {
-        document.getElementById('detailName').textContent = `${person.prenom} ${person.nom}`;
+        document.getElementById('detailName').textContent = `${person.prenom || ''} ${person.nom || ''}`;
 
         const photoEl = document.getElementById('detailPhoto');
         if (person.linkimage) {
@@ -328,15 +339,17 @@
         window.scrollTo({ top: document.getElementById('detailPanel').offsetTop - 100, behavior: 'smooth' });
     }
 
+    // === CHARGEMENT DES VOLS ===
     async function loadFlights(nom, prenom) {
         const list = document.getElementById('flightsList');
-        list.innerHTML = '<p>Chargement...</p>';
+        list.innerHTML = '<p>Chargement des vols...</p>';
 
         try {
+            const fullName = `${nom} ${prenom}`.trim();
             const { data, error } = await supabase
                 .from('logs-plandevol')
                 .select('*')
-                .eq('pilote', `${nom} ${prenom}`)
+                .eq('pilote', fullName)
                 .order('created_at', { ascending: false })
                 .limit(20);
 
@@ -371,9 +384,9 @@
         document.getElementById('detailPanel').style.display = 'none';
     }
 
+    // === MODAL AJOUT ===
     function openModal() {
         document.getElementById('createModal').style.display = 'flex';
-        // Reset fields
         document.getElementById('inputNom').value = '';
         document.getElementById('inputPrenom').value = '';
         document.getElementById('inputDatePassage').value = '';
@@ -423,7 +436,7 @@
         }
     }
 
-    // Chargement initial
+    // === CHARGEMENT INITIAL ===
     loadPersons();
 </script>
 </body>

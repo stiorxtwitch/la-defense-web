@@ -117,6 +117,33 @@
             font-size: 1.8em;
             margin-top: 20px;
         }
+
+        /* ANNONCE */
+        .annonce {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(200, 0, 0, 0.85);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+            max-width: 380px;
+            z-index: 999;
+            font-weight: bold;
+            line-height: 1.5;
+            border: 2px solid #fff;
+        }
+        .annonce button {
+            margin-top: 12px;
+            background: #fff;
+            color: #c00;
+            padding: 8px 16px;
+            font-size: 1em;
+        }
+        .annonce button:hover {
+            background: #eee;
+        }
     </style>
 </head>
 <body>
@@ -125,6 +152,15 @@
     <img src="https://www.pngmart.com/files/23/Loading-PNG-Photos.gif">
     <p>Envoi en cours</p>
 </div>
+
+<!-- ANNONCE -->
+<div class="annonce" id="annonce">
+    ⛔ <strong>ANNONCE DE LA DÉFENSE</strong> ⛔<br><br>
+    L'espace aérien de Cayo Perico est bloqué jusqu'à nouvel ordre.<br>
+    Aucun aéronef n’est autorisé à s’y rendre ou à décoller de Cayo Perico vers Liège.<br><br>
+    <button onclick="document.getElementById('annonce').style.display='none'">Fermer</button>
+</div>
+
 <div class="container">
     <img src="https://i.imgur.com/cotrnBV.png" class="logo">
     <h1>La Défense : Plan et Récapitulatif de Vol</h1>
@@ -167,10 +203,8 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
 const WEBHOOK_URL = "https://discord.com/api/webhooks/1469078801890672833/fLPN-HKIyjKFrcaaRK-HhyOf8O-gDM8IO2HQWbb9QuFDGmCtw1h_9j8NCZP9SzIOL7ZV";
-
 document.getElementById("volForm").addEventListener("submit", async e => {
     e.preventDefault();
     const loading = document.getElementById("loadingOverlay");
@@ -179,7 +213,6 @@ document.getElementById("volForm").addEventListener("submit", async e => {
     message.textContent = "";
     const startTime = Date.now();
     const MIN_DURATION = 10000;
-
     // PARTIE DISCORD – INCHANGÉE
     const embed = {
         title: "🛩️ Plan de Vol – Enregistrement",
@@ -202,19 +235,16 @@ document.getElementById("volForm").addEventListener("submit", async e => {
         footer: { text: "La Défense — Plan de Vol" },
         timestamp: new Date()
     };
-
     await fetch(WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ embeds: [embed] })
     });
-
     // PARTIE SUPABASE – CORRIGÉE ICI
     const supabaseClient = supabase.createClient(
         'https://gktawbaposndfxijkxdk.supabase.co',
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk'
     );
-
     const formData = {
         pilote: document.getElementById('pilote').value,
         copilote: document.getElementById('copilote').value || null,
@@ -230,7 +260,6 @@ document.getElementById("volForm").addEventListener("submit", async e => {
         passagers: document.getElementById('passagers').value || null,
         notes: document.getElementById('notes').value || null
     };
-
     // Insertion (non bloquante)
     supabaseClient
         .from('logs-plandevol')
@@ -243,7 +272,6 @@ document.getElementById("volForm").addEventListener("submit", async e => {
         .catch(err => {
             console.error('Erreur inattendue Supabase :', err);
         });
-
     // Fin du traitement
     const elapsed = Date.now() - startTime;
     if (elapsed < MIN_DURATION) {

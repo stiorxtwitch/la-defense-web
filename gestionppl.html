@@ -168,8 +168,22 @@ h1 { text-align: center; }
 <input id="instructeur" placeholder="Instructeur">
 <input id="linkimage" placeholder="Lien image Imgur">
 
-<select id="theorieavion"><option value="false">Théorie Avion : Non</option><option value="true">Théorie Avion : Oui</option></select>
-<select id="permisavion"><option value="false">Permis Avion : Non</option><option value="true">Permis Avion : Oui</option></select>
+<select id="theorieavion">
+    <option value="false">Théorie Avion : Non</option>
+    <option value="true">Théorie Avion : Oui</option>
+</select>
+<select id="permisavion">
+    <option value="false">Permis Avion : Non</option>
+    <option value="true">Permis Avion : Oui</option>
+</select>
+<select id="theoriehelico">
+    <option value="false">Théorie Hélico : Non</option>
+    <option value="true">Théorie Hélico : Oui</option>
+</select>
+<select id="permishelico">
+    <option value="false">Permis Hélico : Non</option>
+    <option value="true">Permis Hélico : Oui</option>
+</select>
 
 <div class="modal-buttons">
 <button onclick="closeModal()">Annuler</button>
@@ -217,9 +231,8 @@ function showDetail(p) {
         imgEl.style.display = 'none';
     }
 
-    document.getElementById('detailInfo').innerHTML = `
-        Instructeur : ${p.instructeur || '—'}
-    `;
+    document.getElementById('detailInfo').innerHTML = `Instructeur : ${p.instructeur || '—'}`;
+
     loadFlightsAndIncidents(p.nom, p.prenom);
     document.getElementById('detailPanel').style.display = 'block';
 }
@@ -252,7 +265,9 @@ async function savePPL() {
         instructeur: instructeur.value,
         linkimage: linkimage.value,
         theorieavion: theorieavion.value==='true',
-        permisavion: permisavion.value==='true'
+        permisavion: permisavion.value==='true',
+        theoriehelico: theoriehelico.value==='true',
+        permishelico: permishelico.value==='true'
     }]);
     closeModal();
     loadPersons();

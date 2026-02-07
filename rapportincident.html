@@ -1,1 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Défense : Rapport Incident</title>
 
+<link rel="icon" type="image/png" href="https://i.imgur.com/cotrnBV.png">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('https://i.imgur.com/7yarc9G.jpeg') center/cover fixed;
+    color: white;
+}
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 40px;
+    background: rgba(30,35,25,0.45);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+}
+.logo {
+    display: block;
+    margin: 0 auto 25px;
+    max-width: 140px;
+}
+.nav-header {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+.nav-button {
+    background: #4B5320;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+}
+.incident {
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.incident:hover { background: rgba(255,255,255,0.2); }
+.detail {
+    display: none;
+    margin-top: 30px;
+    padding: 20px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 12px;
+}
+img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+button {
+    background: #4B5320;
+    border: none;
+    padding: 12px 20px;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background: #2a2f24;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+}
+input, textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<img src="https://i.imgur.com/cotrnBV.png" class="logo">
+
+<div class="nav-header">
+    <a href="logsplanvol.html" class="nav-button">Logs Plans de Vol</a>
+    <a href="gestionppl.html" class="nav-button">Gestion PPL</a>
+    <a href="rapportincident.html" class="nav-button">Rapport Incident</a>
+</div>
+
+<button onclick="openModal()">+ Ajouter un incident</button>
+
+<div id="incidentList"></div>
+
+<div id="incidentDetail" class="detail"></div>
+
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="modal">
+<div class="modal-content">
+<h2>Nouveau rapport</h2>
+
+<input id="pilote" placeholder="Pilote responsable">
+<input id="copilote" placeholder="Copilote">
+<input id="nombreblesser" placeholder="Nombre de blessés">
+<input id="marchandise" placeholder="Marchandise">
+<input id="lieucrash" placeholder="Lieu du crash">
+<input id="modele" placeholder="Modèle de l'appareil">
+<input id="nbrpassager" placeholder="Nombre de passagers">
+<textarea id="imagesimgur" placeholder="Liens Imgur (un par ligne)"></textarea>
+
+<button onclick="saveIncident()">Enregistrer</button>
+<button onclick="closeModal()">Annuler</button>
+</div>
+</div>
+
+<script>
+const supabaseClient = supabase.createClient(
+    'https://gktawbaposndfxijkxdk.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk'
+);
+
+async function loadIncidents() {
+    const { data } = await supabaseClient
+        .from('rapportincident-ppl')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    const list = document.getElementById('incidentList');
+    list.innerHTML = '';
+
+    data.forEach(i => {
+        const div = document.createElement('div');
+        div.className = 'incident';
+        div.innerHTML = `<strong>${i.pilote}</strong> — ${i.lieucrash}`;
+        div.onclick = () => showIncident(i);
+        list.appendChild(div);
+    });
+}
+
+function showIncident(i) {
+    const images = (i.imagesimgur || '').split('\n').map(l => `<img src="${l.trim()}">`).join('');
+    document.getElementById('incidentDetail').innerHTML = `
+        <h2>Incident – ${i.pilote}</h2>
+        <p>Copilote : ${i.copilote}</p>
+        <p>Blessés : ${i.nombreblesser}</p>
+        <p>Marchandise : ${i.marchandise}</p>
+        <p>Lieu : ${i.lieucrash}</p>
+        <p>Modèle : ${i.modele}</p>
+        <p>Passagers : ${i.nbrpassager}</p>
+        ${images}
+    `;
+    document.getElementById('incidentDetail').style.display = 'block';
+}
+
+function openModal(){ document.getElementById('modal').style.display='flex'; }
+function closeModal(){ document.getElementById('modal').style.display='none'; }
+
+async function saveIncident() {
+    await supabaseClient.from('rapportincident-ppl').insert([{
+        pilote: pilote.value,
+        copilote: copilote.value,
+        nombreblesser: nombreblesser.value,
+        marchandise: marchandise.value,
+        lieucrash: lieucrash.value,
+        modele: modele.value,
+        nbrpassager: nbrpassager.value,
+        imagesimgur: imagesimgur.value
+    }]);
+    closeModal();
+    loadIncidents();
+}
+
+loadIncidents();
+</script>
+</body>
+</html>

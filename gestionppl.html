@@ -195,7 +195,7 @@
         <a href="rapportincident.html" class="nav-button">Rapport Incident</a>
     </div>
 
-    <button class="create-btn" id="btnCreateProfile">+ Créer un profil</button>
+    <button class="create-btn" id="btnCreate">+ Créer un profil</button>
 
     <ul class="person-list" id="personList"></ul>
 
@@ -263,12 +263,14 @@
 
 <script>
     // ==============================================
-    // SUPABASE – UNE SEULE DÉCLARATION
+    // SUPABASE – DÉCLARATION UNIQUE ET UNIQUE
     // ==============================================
     const SUPABASE_URL = 'https://gktawbaposndfxijkxdk.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk';
 
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    console.log("Supabase chargé avec succès");
 
     const loading = document.getElementById('loadingOverlay');
 
@@ -303,7 +305,7 @@
             });
         } catch (err) {
             console.error('Erreur chargement profils:', err);
-            document.getElementById('personList').innerHTML = '<p style="color:#ff5555; text-align:center;">Erreur de chargement des profils</p>';
+            document.getElementById('personList').innerHTML = '<p style="color:#ff5555; text-align:center;">Erreur de chargement</p>';
         } finally {
             loading.style.display = 'none';
         }
@@ -312,16 +314,16 @@
     function showDetail(person) {
         document.getElementById('detailName').textContent = `${person.prenom || ''} ${person.nom || ''}`;
 
-        const photoEl = document.getElementById('detailPhoto');
+        const photo = document.getElementById('detailPhoto');
         if (person.linkimage) {
-            photoEl.src = person.linkimage;
-            photoEl.style.display = 'block';
+            photo.src = person.linkimage;
+            photo.style.display = 'block';
         } else {
-            photoEl.style.display = 'none';
+            photo.style.display = 'none';
         }
 
         document.getElementById('detailInfo').innerHTML = `
-            <p><strong>Date de passage :</strong> ${person.datedepassage || '—'}</p>
+            <p><strong>Date :</strong> ${person.datedepassage || '—'}</p>
             <p><strong>Théorie Avion :</strong> ${person.theorieavion ? 'Oui' : 'Non'}</p>
             <p><strong>Permis Avion :</strong> ${person.permisavion ? 'Oui' : 'Non'}</p>
             <p><strong>Théorie Hélico :</strong> ${person.theoriehelico ? 'Oui' : 'Non'}</p>
@@ -336,42 +338,41 @@
     }
 
     async function loadFlights(nom, prenom) {
-        const list = document.getElementById('flightsList');
-        list.innerHTML = '<p>Chargement...</p>';
+        const container = document.getElementById('flightsList');
+        container.innerHTML = '<p>Chargement...</p>';
 
         try {
-            const fullName = `${nom} ${prenom}`.trim();
             const { data, error } = await supabase
                 .from('logs-plandevol')
                 .select('*')
-                .eq('pilote', fullName)
+                .eq('pilote', `${nom} ${prenom}`)
                 .order('created_at', { ascending: false })
                 .limit(20);
 
             if (error) throw error;
 
-            list.innerHTML = '';
+            container.innerHTML = '';
 
             if (!data || data.length === 0) {
-                list.innerHTML = '<p>Aucun plan de vol trouvé pour ce pilote.</p>';
+                container.innerHTML = '<p>Aucun vol trouvé</p>';
                 return;
             }
 
             data.forEach(vol => {
                 const div = document.createElement('div');
-                div.style.marginBottom = '12px';
+                div.style.margin = '8px 0';
                 div.style.padding = '10px';
                 div.style.background = 'rgba(255,255,255,0.05)';
                 div.style.borderRadius = '6px';
                 div.innerHTML = `
-                    <strong>${vol.dateduvol || '—'}</strong> — ${vol.lieudepart || '?'} → ${vol.lieuarrive || '?'}
-                    <br><small>${vol.modele || '—'} | ${vol.typeavion || '—'}</small>
+                    <strong>${vol.dateduvol || '?'}</strong> — ${vol.lieudepart || '?'} → ${vol.lieuarrive || '?'}
+                    <br><small>${vol.modele || '—'}</small>
                 `;
-                list.appendChild(div);
+                container.appendChild(div);
             });
         } catch (err) {
             console.error(err);
-            list.innerHTML = '<p style="color:#ff5555;">Erreur lors du chargement des vols</p>';
+            container.innerHTML = '<p style="color:#ff5555;">Erreur vols</p>';
         }
     }
 
@@ -381,15 +382,11 @@
 
     function openModal() {
         document.getElementById('createModal').style.display = 'flex';
-        document.getElementById('inputNom').value = '';
-        document.getElementById('inputPrenom').value = '';
-        document.getElementById('inputDatePassage').value = '';
-        document.getElementById('inputTheorieAvion').value = 'false';
-        document.getElementById('inputPermisAvion').value = 'false';
-        document.getElementById('inputTheorieHelico').value = 'false';
-        document.getElementById('inputPermisHelico').value = 'false';
-        document.getElementById('inputInstructeur').value = '';
-        document.getElementById('inputLinkImage').value = '';
+        // Reset tous les champs
+        document.querySelectorAll('#createModal input, #createModal select').forEach(el => {
+            if (el.type === 'select-one') el.value = 'false';
+            else el.value = '';
+        });
     }
 
     function closeModal() {
@@ -401,7 +398,7 @@
         const prenom = document.getElementById('inputPrenom').value.trim();
 
         if (!nom || !prenom) {
-            alert('Nom et Prénom sont obligatoires !');
+            alert("Nom et Prénom obligatoires !");
             return;
         }
 
@@ -421,20 +418,23 @@
             const { error } = await supabase.from('ppl-gestion').insert([data]);
             if (error) throw error;
 
-            alert('Profil créé avec succès !');
+            alert('Profil créé !');
             closeModal();
             loadPersons();
         } catch (err) {
             console.error(err);
-            alert('Erreur lors de la création : ' + (err.message || 'Inconnue'));
+            alert('Erreur : ' + (err.message || 'Inconnue'));
         }
     }
 
     // ==============================================
-    // ÉVÈNEMENTS ET LANCEMENT
+    // ÉVÈNEMENTS + DÉMARRAGE
     // ==============================================
     document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('btnCreateProfile').addEventListener('click', openModal);
+        // Bouton Créer un profil
+        document.getElementById('btnCreate').addEventListener('click', openModal);
+
+        // Lancement initial
         loadPersons();
     });
 </script>

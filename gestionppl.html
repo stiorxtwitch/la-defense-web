@@ -28,15 +28,12 @@ body {
     margin: 0 auto 25px;
     max-width: 140px;
 }
-h1 {
-    text-align: center;
-    margin-bottom: 25px;
-}
+h1 { text-align: center; }
 .nav-header {
     display: flex;
     justify-content: center;
     gap: 30px;
-    margin-bottom: 35px;
+    margin-bottom: 25px;
     flex-wrap: wrap;
 }
 .nav-button {
@@ -48,6 +45,19 @@ h1 {
     font-weight: bold;
 }
 .nav-button:hover { background-color: #3e451b; }
+
+.create-btn {
+    display: block;
+    margin: 25px auto;
+    padding: 14px 28px;
+    background: #4B5320;
+    color: white;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+}
+
 .person-item {
     padding: 15px;
     background: rgba(255,255,255,0.1);
@@ -56,6 +66,7 @@ h1 {
     cursor: pointer;
 }
 .person-item:hover { background: rgba(255,255,255,0.2); }
+
 .detail-panel {
     margin-top: 30px;
     padding: 20px;
@@ -63,24 +74,46 @@ h1 {
     border-radius: 12px;
     display: none;
 }
+
 .flight {
     padding: 10px;
     margin-bottom: 10px;
     background: rgba(255,255,255,0.08);
     border-radius: 6px;
 }
+
 .section-title {
     margin-top: 20px;
     font-weight: bold;
     text-decoration: underline;
 }
-button {
-    padding: 10px 20px;
-    border: none;
+
+/* MODAL */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background: #2a2f24;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 450px;
+}
+.modal-content input, .modal-content select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
     border-radius: 6px;
-    background: #4B5320;
-    color: white;
-    cursor: pointer;
+    border: none;
+}
+.modal-buttons {
+    display: flex;
+    gap: 15px;
 }
 </style>
 </head>
@@ -89,7 +122,7 @@ button {
 
 <div class="container">
 
-<img src="https://i.imgur.com/cotrnBV.png" class="logo" alt="Logo">
+<img src="https://i.imgur.com/cotrnBV.png" class="logo">
 
 <h1>Gestion PPL</h1>
 
@@ -99,46 +132,48 @@ button {
     <a href="rapportincident.html" class="nav-button">Rapport Incident</a>
 </div>
 
+<button class="create-btn" onclick="openModal()">+ Créer un PPL</button>
+
 <ul id="personList"></ul>
 
 <div id="detailPanel" class="detail-panel">
     <h2 id="detailName"></h2>
     <div id="detailInfo"></div>
-
     <div id="flightsList"></div>
-
     <button onclick="closeDetail()">Fermer</button>
 </div>
 
 </div>
 
+<!-- MODAL CRÉATION -->
+<div id="createModal" class="modal">
+<div class="modal-content">
+<h3>Créer un PPL</h3>
+
+<input id="nom" placeholder="Nom">
+<input id="prenom" placeholder="Prénom">
+<input id="instructeur" placeholder="Instructeur">
+
+<select id="theorieavion"><option value="false">Théorie Avion : Non</option><option value="true">Théorie Avion : Oui</option></select>
+<select id="permisavion"><option value="false">Permis Avion : Non</option><option value="true">Permis Avion : Oui</option></select>
+
+<div class="modal-buttons">
+<button onclick="closeModal()">Annuler</button>
+<button onclick="savePPL()">Enregistrer</button>
+</div>
+</div>
+</div>
+
 <script>
-/* ===================== SUPABASE ===================== */
-
-const SUPABASE_URL = 'https://gktawbaposndfxijkxdk.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk';
-
 const supabaseClient = supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
+    'https://gktawbaposndfxijkxdk.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk'
 );
 
-/* ===================== LOAD PPL ===================== */
-
 async function loadPersons() {
-    const { data, error } = await supabaseClient
-        .from('ppl-gestion')
-        .select('*')
-        .order('nom');
-
+    const { data } = await supabaseClient.from('ppl-gestion').select('*').order('nom');
     const list = document.getElementById('personList');
     list.innerHTML = '';
-
-    if (error || !data) {
-        list.innerHTML = '<p>Erreur chargement profils</p>';
-        return;
-    }
-
     data.forEach(p => {
         const li = document.createElement('li');
         li.className = 'person-item';
@@ -148,85 +183,56 @@ async function loadPersons() {
     });
 }
 
-/* ===================== DETAIL ===================== */
-
-function showDetail(person) {
-    document.getElementById('detailName').textContent =
-        `${person.prenom} ${person.nom}`;
-
+function showDetail(p) {
+    document.getElementById('detailName').textContent = `${p.prenom} ${p.nom}`;
     document.getElementById('detailInfo').innerHTML = `
-        <p>Théorie Avion : ${person.theorieavion ? 'Oui' : 'Non'}</p>
-        <p>Permis Avion : ${person.permisavion ? 'Oui' : 'Non'}</p>
-        <p>Théorie Hélico : ${person.theoriehelico ? 'Oui' : 'Non'}</p>
-        <p>Permis Hélico : ${person.permishelico ? 'Oui' : 'Non'}</p>
-        <p>Instructeur : ${person.instructeur || '—'}</p>
+        Instructeur : ${p.instructeur || '—'}
     `;
-
-    loadFlightsAndIncidents(person.nom, person.prenom);
+    loadFlightsAndIncidents(p.nom, p.prenom);
     document.getElementById('detailPanel').style.display = 'block';
 }
 
-/* ===================== FLIGHTS + INCIDENTS ===================== */
-
 async function loadFlightsAndIncidents(nom, prenom) {
-    const container = document.getElementById('flightsList');
-    container.innerHTML = '<p>Chargement...</p>';
-
-    const prenomNom = `${prenom} ${nom}`.trim();
-    const nomPrenom = `${nom} ${prenom}`.trim();
-
-    const vols = await supabaseClient
-        .from('logs-plandevol')
+    const prenomNom = `${prenom} ${nom}`;
+    const nomPrenom = `${nom} ${prenom}`;
+    const vols = await supabaseClient.from('logs-plandevol')
         .select('*')
-        .or(`pilote.ilike.${prenomNom},pilote.ilike.${nomPrenom}`)
-        .order('created_at', { ascending: false });
+        .or(`pilote.ilike.${prenomNom},pilote.ilike.${nomPrenom}`);
 
-    const incidents = await supabaseClient
-        .from('rapportincident-ppl')
+    const incidents = await supabaseClient.from('rapportincident-ppl')
         .select('*')
-        .or(`pilote.ilike.${prenomNom},pilote.ilike.${nomPrenom}`)
-        .order('created_at', { ascending: false });
+        .or(`pilote.ilike.${prenomNom},pilote.ilike.${nomPrenom}`);
 
-    container.innerHTML = '';
+    const c = document.getElementById('flightsList');
+    c.innerHTML = '<div class="section-title">Plans de vol</div>';
 
-    container.innerHTML += '<div class="section-title">Plans de vol</div>';
-
-    if (!vols.data || vols.data.length === 0) {
-        container.innerHTML += '<p>Aucun plan de vol</p>';
-    } else {
-        vols.data.forEach(v => {
-            container.innerHTML += `
-                <div class="flight">
-                    ${v.lieudepart || '?'} → ${v.lieuarrive || '?'}<br>
-                    <small>${v.modele || '—'} | ${v.typeavion || '—'}</small>
-                </div>
-            `;
-        });
-    }
-
-    container.innerHTML += '<div class="section-title">⚠️ Incidents</div>';
-
-    if (!incidents.data || incidents.data.length === 0) {
-        container.innerHTML += '<p>Aucun incident</p>';
-    } else {
-        incidents.data.forEach(i => {
-            container.innerHTML += `
-                <div class="flight">
-                    <strong>${i.lieucrash}</strong><br>
-                    ${i.modele} — Blessés : ${i.nombreblesser}
-                </div>
-            `;
-        });
-    }
+    vols.data.forEach(v => c.innerHTML += `<div class="flight">${v.lieudepart} → ${v.lieuarrive}</div>`);
+    c.innerHTML += '<div class="section-title">⚠️ Incidents</div>';
+    incidents.data.forEach(i => c.innerHTML += `<div class="flight">${i.lieucrash}</div>`);
 }
-
-/* ===================== UI ===================== */
 
 function closeDetail() {
     document.getElementById('detailPanel').style.display = 'none';
 }
 
-/* ===================== INIT ===================== */
+function openModal() {
+    document.getElementById('createModal').style.display = 'flex';
+}
+function closeModal() {
+    document.getElementById('createModal').style.display = 'none';
+}
+
+async function savePPL() {
+    await supabaseClient.from('ppl-gestion').insert([{
+        nom: nom.value,
+        prenom: prenom.value,
+        instructeur: instructeur.value,
+        theorieavion: theorieavion.value === 'true',
+        permisavion: permisavion.value === 'true'
+    }]);
+    closeModal();
+    loadPersons();
+}
 
 loadPersons();
 </script>

@@ -8,101 +8,34 @@
 
 <style>
 body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-image: url('https://i.imgur.com/7yarc9G.jpeg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    color: #fff;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.overlay {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(75, 83, 32, 0.25);
-    z-index: -2;
+    margin:0; padding:0; font-family:Arial,sans-serif;
+    background-image:url('https://i.imgur.com/7yarc9G.jpeg');
+    background-size:cover; background-position:center; background-attachment:fixed;
+    color:#fff; min-height:100vh;
+    display:flex; justify-content:center; align-items:center;
 }
 .container {
-    background-color: rgba(30, 35, 25, 0.45);
+    background-color: rgba(30,35,25,0.45);
     backdrop-filter: blur(12px);
-    border-radius: 16px;
-    padding: 50px 40px;
-    max-width: 480px;
-    width: 90%;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    text-align: center;
+    border-radius:16px; padding:50px 40px;
+    max-width:480px; width:90%;
+    box-shadow:0 10px 40px rgba(0,0,0,0.5);
+    text-align:center;
 }
-.logo {
-    max-width: 160px;
-    margin-bottom: 30px;
-}
-h1 {
-    font-size: 2.4em;
-    margin-bottom: 40px;
-}
-label {
-    font-weight: bold;
-    margin-bottom: 10px;
-    display: block;
-    text-align: left;
-}
-input {
-    width: 100%;
-    padding: 16px;
-    margin-bottom: 25px;
-    border-radius: 8px;
-    border: none;
-    font-size: 1.1em;
-    background-color: rgba(255,255,255,0.12);
-    color: white;
-}
-input:focus {
-    outline: none;
-    background-color: rgba(255,255,255,0.25);
-}
-button {
-    background-color: #4B5320;
-    color: white;
-    border: none;
-    padding: 18px;
-    font-size: 1.3em;
-    border-radius: 8px;
-    width: 100%;
-    cursor: pointer;
-    font-weight: bold;
-    margin-top: 15px;
-}
-button:hover { background-color: #3e451b; }
-#error {
-    margin-top: 20px;
-    color: #ff5555;
-    font-size: 1.1em;
-    min-height: 24px;
-}
-#loadingOverlay {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0,0,0,0.75);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    z-index: 9999;
-}
-#loadingOverlay img { width: 120px; }
-#loadingOverlay p { font-size: 1.8em; margin-top: 20px; }
+.logo { max-width:160px; margin-bottom:30px; }
+h1 { font-size:2.4em; margin-bottom:40px; }
+label { font-weight:bold; display:block; text-align:left; margin-bottom:10px; }
+input { width:100%; padding:16px; margin-bottom:25px; border-radius:8px; border:none; font-size:1.1em; background: rgba(255,255,255,0.12); color:white; }
+input:focus { outline:none; background: rgba(255,255,255,0.25); }
+button { background:#4B5320; color:white; border:none; padding:18px; font-size:1.3em; border-radius:8px; width:100%; cursor:pointer; font-weight:bold; }
+button:hover { background:#3e451b; }
+#error { margin-top:20px; color:#ff5555; min-height:24px; font-size:1.1em; }
+#loadingOverlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); display:none; justify-content:center; align-items:center; flex-direction:column; z-index:9999; }
+#loadingOverlay img { width:120px; }
+#loadingOverlay p { font-size:1.8em; margin-top:20px; }
 </style>
 </head>
-
 <body>
-
-<div class="overlay"></div>
 
 <div id="loadingOverlay">
     <img src="https://www.pngmart.com/files/23/Loading-PNG-Photos.gif" alt="Chargement">
@@ -114,38 +47,85 @@ button:hover { background-color: #3e451b; }
     <h1>Connexion</h1>
 
     <form id="loginForm">
-        <label for="username">Nom d'utilisateur :</label>
-        <input type="text" id="username" autocomplete="username" required>
-
-        <label for="password">Mot de passe :</label>
-        <input type="password" id="password" autocomplete="current-password" required>
-
+        <label>Nom d'utilisateur :</label>
+        <input type="text" id="username" required>
+        <label>Mot de passe :</label>
+        <input type="password" id="password" required>
         <button type="submit">Se connecter</button>
     </form>
-
     <div id="error"></div>
 </div>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwn654SauT58EnVoKnW7mjlQoeQH0TLu0svyLhKtYp0w1LMdmnkHwjXkiBrNIx_UnnjOw/exec";
+const SCRIPT_URL = "<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Défense : Connexion</title>
+<link rel="icon" type="image/png" href="https://i.imgur.com/cotrnBV.png">
 
-document.getElementById("loginForm").addEventListener("submit", async function(e) {
+<style>
+body {
+    margin:0; padding:0; font-family:Arial,sans-serif;
+    background-image:url('https://i.imgur.com/7yarc9G.jpeg');
+    background-size:cover; background-position:center; background-attachment:fixed;
+    color:#fff; min-height:100vh;
+    display:flex; justify-content:center; align-items:center;
+}
+.container {
+    background-color: rgba(30,35,25,0.45);
+    backdrop-filter: blur(12px);
+    border-radius:16px; padding:50px 40px;
+    max-width:480px; width:90%;
+    box-shadow:0 10px 40px rgba(0,0,0,0.5);
+    text-align:center;
+}
+.logo { max-width:160px; margin-bottom:30px; }
+h1 { font-size:2.4em; margin-bottom:40px; }
+label { font-weight:bold; display:block; text-align:left; margin-bottom:10px; }
+input { width:100%; padding:16px; margin-bottom:25px; border-radius:8px; border:none; font-size:1.1em; background: rgba(255,255,255,0.12); color:white; }
+input:focus { outline:none; background: rgba(255,255,255,0.25); }
+button { background:#4B5320; color:white; border:none; padding:18px; font-size:1.3em; border-radius:8px; width:100%; cursor:pointer; font-weight:bold; }
+button:hover { background:#3e451b; }
+#error { margin-top:20px; color:#ff5555; min-height:24px; font-size:1.1em; }
+#loadingOverlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); display:none; justify-content:center; align-items:center; flex-direction:column; z-index:9999; }
+#loadingOverlay img { width:120px; }
+#loadingOverlay p { font-size:1.8em; margin-top:20px; }
+</style>
+</head>
+<body>
+
+<div id="loadingOverlay">
+    <img src="https://www.pngmart.com/files/23/Loading-PNG-Photos.gif" alt="Chargement">
+    <p>Connexion en cours...</p>
+</div>
+
+<div class="container">
+    <img src="https://i.imgur.com/cotrnBV.png" class="logo" alt="Logo La Défense">
+    <h1>Connexion</h1>
+
+    <form id="loginForm">
+        <label>Nom d'utilisateur :</label>
+        <input type="text" id="username" required>
+        <label>Mot de passe :</label>
+        <input type="password" id="password" required>
+        <button type="submit">Se connecter</button>
+    </form>
+    <div id="error"></div>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYVXH5SN4uyNNhUKrMBPW1nfnaPokT5FO1SKkib7r9Gr6Nq8ood47zWxPmx3YFATrGKw/exec";
+
+document.getElementById("loginForm").addEventListener("submit", async function(e){
     e.preventDefault();
-
-    const errorDiv = document.getElementById("error");
-    const loading = document.getElementById("loadingOverlay");
-
-    errorDiv.textContent = "";
-    loading.style.display = "flex";
-
     const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value;
-
-    if (!username || !password) {
-        errorDiv.textContent = "Veuillez remplir tous les champs.";
-        loading.style.display = "none";
-        return;
-    }
+    const errorDiv = document.getElementById("error");
+    const loading = document.getElementById("loadingOverlay");
+    errorDiv.textContent = "";
+    loading.style.display = "flex";
 
     try {
         const response = await fetch(SCRIPT_URL, {
@@ -154,18 +134,58 @@ document.getElementById("loginForm").addEventListener("submit", async function(e
             body: JSON.stringify({ username, password })
         });
 
-        const result = await response.json();
+        if(!response.ok) throw new Error("HTTP " + response.status);
 
-        if (result.success === true) {
+        const result = await response.json();
+        loading.style.display = "none";
+
+        if(result.success){
             window.location.href = "logsplanvol.html";
         } else {
-            errorDiv.textContent = result.error || "Identifiants incorrects.";
+            errorDiv.textContent = "Identifiants incorrects.";
         }
-    } catch (err) {
-        console.error("Erreur fetch:", err);
-        errorDiv.textContent = "Erreur de connexion au serveur. Vérifie l'URL ou essaie à nouveau.";
-    } finally {
+    } catch(err){
         loading.style.display = "none";
+        errorDiv.textContent = "Erreur serveur : " + (err.message || err);
+        console.error("Erreur fetch:", err);
+    }
+});
+</script>
+
+</body>
+</html>
+";
+
+document.getElementById("loginForm").addEventListener("submit", async function(e){
+    e.preventDefault();
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
+    const errorDiv = document.getElementById("error");
+    const loading = document.getElementById("loadingOverlay");
+    errorDiv.textContent = "";
+    loading.style.display = "flex";
+
+    try {
+        const response = await fetch(SCRIPT_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
+        });
+
+        if(!response.ok) throw new Error("HTTP " + response.status);
+
+        const result = await response.json();
+        loading.style.display = "none";
+
+        if(result.success){
+            window.location.href = "logsplanvol.html";
+        } else {
+            errorDiv.textContent = "Identifiants incorrects.";
+        }
+    } catch(err){
+        loading.style.display = "none";
+        errorDiv.textContent = "Erreur serveur : " + (err.message || err);
+        console.error("Erreur fetch:", err);
     }
 });
 </script>

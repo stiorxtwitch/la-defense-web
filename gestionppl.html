@@ -195,7 +195,7 @@
         <a href="rapportincident.html" class="nav-button">Rapport Incident</a>
     </div>
 
-    <button class="create-btn" onclick="openModal()">+ Créer un profil</button>
+    <button class="create-btn" id="btnCreateProfile">+ Créer un profil</button>
 
     <ul class="person-list" id="personList"></ul>
 
@@ -263,7 +263,7 @@
 
 <script>
     // ==============================================
-    // SUPABASE – DÉCLARATION UNIQUE ICI
+    // SUPABASE – UNE SEULE DÉCLARATION
     // ==============================================
     const SUPABASE_URL = 'https://gktawbaposndfxijkxdk.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdrdGF3YmFwb3NuZGZ4aWpreGRrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNzUyNDUsImV4cCI6MjA3OTY1MTI0NX0.tY-CHuyb2zr9s6hlGkwmrdTvg920VVNghI9S45CjwKk';
@@ -431,9 +431,12 @@
     }
 
     // ==============================================
-    // LANCEMENT
+    // ÉVÈNEMENTS ET LANCEMENT
     // ==============================================
-    loadPersons();
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('btnCreateProfile').addEventListener('click', openModal);
+        loadPersons();
+    });
 </script>
 </body>
 </html>
